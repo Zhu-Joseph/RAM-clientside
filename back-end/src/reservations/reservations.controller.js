@@ -125,17 +125,6 @@ async function create(req, res, next) {
   res.status(201).json({data})
 }
 
-async function find(req, res, next) {
-  const phone = req.query.mobile_phone
-  const content = phone ?
-  await service.find(req.query.mobile_phone) :
-  "No reservations found"
-
-  res.json({
-    data: content
-  })
-}
-
 
 module.exports = {
   list: asyncErrorBoundary(list),

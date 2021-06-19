@@ -24,11 +24,18 @@ function find(phone) {
     .where({"mobile_number": phone})
 }
 
+function findResvSize(id) {
+    return knex("reservations")
+    .select("people")
+    .where({"id": id})
+}
+
 module.exports = {
     list,
     listDates,
     create,
-    find
+    find,
+    findResvSize
 }
 
 
