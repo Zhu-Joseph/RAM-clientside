@@ -7,6 +7,9 @@
 const router = require("express").Router();
 const controller = require("./reservations.controller");
 
+router.route("/:reservationsId/seat")
+    .get(controller.findId)//MAY NOT NEED
+
 router.route("/")
     .post(controller.create)
     .get(controller.list)

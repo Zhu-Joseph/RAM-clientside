@@ -80,15 +80,26 @@ export async function createReservations(reservation, signal) {
   return await fetchJson(url, options, [])
 }
 
-//FETCH TABLES DID NOT REALLY WORK, MAY DELETE
-export async function listTables(setTables) {
-  const url = `${API_BASE_URL}/tables`
-  const getTables = await fetch(url)
-  const data = await getTables.json()
-  return data
+// TO CREATE A NEW RESERVATION
+export async function createTable(table, signal) {
+  const url = `${API_BASE_URL}/tables/new`
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify(table),
+    signal,
+  }
+  return await fetchJson(url, options, [])
 }
 
-//WRITE AN API CALL TO GET THE SPECIFIC RESERVATION ID
-//USE THE USEPARAMS TO GET THE ID FROM THE URL
-//CREATE A FIND OR READ METHOD TO GET THE SPECIFIC RESEVATION FROM THE BACKEND
-//COMPARE THE TOW, AS A FRONTEND STEP FOR VALIDATION
+//TO UPDATE TABLES OR SET SEATS
+export async function updateTable(tableId, resvSizeId, signal) {
+  const url = `${API_BASE_URL}/tables/${tableId}/seat`
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(resvSizeId),
+    signal,
+  }
+  return await fetchJson(url, options, [])
+}

@@ -5,19 +5,31 @@ function list() {
     .select("*")
 }
 
-function update(id) {
+function findTable (tableId) {
     return knex("tables")
-    .where({"table_name": "Bar #2"})
+    .select("*")
+    .where({"id": tableId})
+    .first()
+}
+
+function update(tableId, reservationId) {
+    return knex("tables")
+    .where({"id": tableId})
     .update({
         "occupied": true,
-        "reservation_id": id 
+        "reservation_id": reservationId 
     })
 }
 
-
-
+function create(table) {
+    return knex("tables")
+    .insert(table, "*")
+    .then((createTable) => createTable[0])
+}
 
 module.exports = {
     list,
     update,
+    findTable,
+    create
 }

@@ -125,8 +125,15 @@ async function create(req, res, next) {
   res.status(201).json({data})
 }
 
+async function findId(req, res, next) {
+  const id = req.params.reservationsId
+  const people = await service.findId(id)
+  res.json({data: people})
+}
+
 
 module.exports = {
   list: asyncErrorBoundary(list),
-  create: [validateReservation, closedTuesdays, notOperatingHours, pastReservation, create]
+  create: [validateReservation, closedTuesdays, notOperatingHours, pastReservation, create],
+  findId
 };

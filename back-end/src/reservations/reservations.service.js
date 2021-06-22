@@ -30,12 +30,20 @@ function findResvSize(id) {
     .where({"id": id})
 }
 
+function findId(id) {
+    return knex("reservations")
+    .select("*")
+    .where({"id":id})
+    .first()
+}
+
 module.exports = {
     list,
     listDates,
     create,
     find,
-    findResvSize
+    findResvSize,
+    findId
 }
 
 

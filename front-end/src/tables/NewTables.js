@@ -1,22 +1,32 @@
 import React, {useState} from 'react'
 import {useHistory} from "react-router-dom"
+import ErrorAlert from "../layout/ErrorAlert"
 import {validateTable} from "../utils/handlers"
+import {createTable} from "../utils/api"
 
 export default function NewTables() {
     const initialState = {
         "table_name": "",
-        "capacity": 0
+        "capacity": 0,
+        "occupied":false,
     }
+
     const history = useHistory()
     const [formData, setFormData] = useState({...initialState})
+    const [error, setError] = useState(undefined)
 
     function submitHandler(event) {
         event.preventDefault()
         const abortController = new AbortController()
         const result = validateTable(formData)
  
-        if(result) return history.push("/dashboard")
-        
+        if(result) {
+            createTable({data: formData}, abortController.signal)
+            .then(() => {
+                history.push("/dashboard")
+            })
+            .catch(setError)
+        }
         return () => abortController.abort()
     }
     
@@ -52,6 +62,11 @@ export default function NewTables() {
         setFormData(initialState)
     }
 
+    if(error) {
+        return (
+            <ErrorAlert error={error} />
+        )
+    }
 
     return (
         <div>
