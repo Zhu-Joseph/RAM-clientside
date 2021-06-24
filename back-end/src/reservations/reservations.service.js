@@ -9,6 +9,7 @@ function listDates(date) {
     return knex("reservations")
     .select("*")
     .where({"reservation_date": date})
+    .whereNot({"status": "finished"})
     .orderBy("reservation_time")
 }
 
@@ -37,13 +38,20 @@ function findId(id) {
     .first()
 }
 
+function updateStatus(reservationId, newStatus) {
+    return knex("reservations")
+    .where({"id": reservationId})
+    .update({"status": newStatus})
+}
+
 module.exports = {
     list,
     listDates,
     create,
     find,
     findResvSize,
-    findId
+    findId,
+    updateStatus
 }
 
 

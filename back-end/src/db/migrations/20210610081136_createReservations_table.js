@@ -1,6 +1,6 @@
 
 exports.up = function(knex) {
-    knex.schema.createTable("reservations", (table) => {
+    return knex.schema.createTable("reservations", (table) => {
       table.increments("id").primary()
       table.string("first_name",15).notNullable()
       table.string("last_name",15).notNullable()

@@ -53,17 +53,33 @@ async function create(req, res, next) {
 
 async function update(req, res, next) {
     const tableId = req.params.table_id
-    const reservationId = req.body.data.reservation_id
+    const reservationId = req.body.data.id
 
     const updatedTable = await service.update(tableId, reservationId)
 
     res.json({data: updatedTable})
 }
 
+async function destroy(req, res, next) {
+    const tableId = req.params.table_id
+    const table = await service.findTable(tableId)
+   
+    if(!table.occupied) {
+        next({status:400, 
+            message: "The current table is not occupied"
+        })
+    } else {
+        const data = await service.delete(tableId)
+    }
+    
+    res.sendStatus(204)
+}
+
 
 module.exports = {
     list: asyncErrorBoundary(list),
-    create: [validateTable, create],
-    update: [tableExist, validSizeandTable ,asyncErrorBoundary(update)]
+    create: [validateTable, asyncErrorBoundary(create)],
+    update: [tableExist, validSizeandTable ,asyncErrorBoundary(update)],
+    delete: [tableExist, asyncErrorBoundary(destroy)]
     
 }

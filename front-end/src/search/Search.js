@@ -65,10 +65,12 @@ export default function Search() {
                Phone: ${reservation.mobile_number}
                Date: ${reservation.reservation_date}
                Time: ${reservation.reservation_time}
-               Party Size: ${reservation.people}`}
-               <button>
+               Party Size: ${reservation.people}
+               Status: ${reservation.status}`}
+              {reservation.status === "booked" ? 
+              <button>
                 <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
-              </button>        
+              </button>: null}    
             </li>
           )
       })

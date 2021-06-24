@@ -3,6 +3,7 @@ const controller = require("./tables.controller")
 
 router.route("/:table_id/seat")
     .put(controller.update)
+    .delete(controller.delete)
 
 router.route("/new")
     .post(controller.create)

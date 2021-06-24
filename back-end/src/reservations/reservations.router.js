@@ -7,8 +7,11 @@
 const router = require("express").Router();
 const controller = require("./reservations.controller");
 
-router.route("/:reservationsId/seat")
-    .get(controller.findId)//MAY NOT NEED
+router.route("/:reservation_id/status")
+    .put(controller.updateStatus)
+
+router.route("/:reservation_id/seat")
+    .get(controller.findId)
 
 router.route("/")
     .post(controller.create)

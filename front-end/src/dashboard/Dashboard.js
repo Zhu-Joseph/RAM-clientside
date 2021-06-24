@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useHistory } from "react-router-dom";
 import queryString from "query-string"
-import { listReservations } from "../utils/api";
+import { listReservations, deleteTable, updateStatus} from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { today, next, previous } from "../utils/date-time";
+
+import Reservations from "../reservations/Reservations";
+import Tables from "../tables/Tables";
 
 /**
  * Defines the dashboard page.
@@ -15,12 +18,15 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [reservationDate, setReservationDate] = useState(date)
+  const history = useHistory()
+  const [tables, setTables] = useState([])
   const {search} = useLocation()
   const newDate = queryString.parse(search).date
 
   useEffect(loadDashboard, [reservationDate]);
   useEffect(loadDefault, [search])
-
+  useEffect(loadTables, [])
+ 
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
@@ -37,6 +43,17 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
     return () => abortController.abort();
   }
 
+  function loadTables() {
+    const abortController = new AbortController();
+    setReservationsError(null)
+    fetch("http://localhost:5000/tables")
+    .then((response => response.json()))
+    .then((tables => setTables(tables.data)))
+    .catch(setReservationsError)
+    return () => abortController.abort();
+}
+
+
   const handlePrev = () => {
      newDate ? setReservationDate(previous(newDate)) : setReservationDate(previous(date))
   }
@@ -50,21 +67,24 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
   }
 
     const list = reservations.map((reservation) => {
-      const reservation_id = reservation.id//TO MAKE SURE TEST PASSES AND RUNS
+      return (
+        <Reservations 
+          reservation={reservation}
+          loadDashboard={loadDashboard}
+        /> 
+        )
+    })
+   
+    const listTable = tables.map((table) => {
 
       return (
-          <li key={reservation.id}>
-            {`First Name: ${reservation.first_name}
-             Last Name: ${reservation.last_name}
-             Phone: ${reservation.mobile_number}
-             Date: ${reservation.reservation_date}
-             Time: ${reservation.reservation_time}
-             Party Size: ${reservation.people}`}
-             <button>
-               <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
-              </button>        
-          </li>
-        )
+        <Tables 
+          table={table}
+          loadTables={loadTables}
+          loadDashboard={loadDashboard}
+          setReservationsError={setReservationsError}
+        />
+      )
     })
 
     // if(newDate) {
@@ -87,6 +107,9 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
             <button onClick={handleNext}>
               <Link to={`dashboard?date=${next(reservationDate)}`}>Next</Link>
             </button>
+            <ol>
+              {listTable}
+            </ol>
         </main>
       );
     // }

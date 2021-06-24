@@ -3,6 +3,7 @@ const knex = require("../db/connection")
 function list() {
     return knex("tables")
     .select("*")
+    .orderBy("table_name")
 }
 
 function findTable (tableId) {
@@ -27,9 +28,16 @@ function create(table) {
     .then((createTable) => createTable[0])
 }
 
+function destroy(tableId) {
+    return knex("tables")
+    .where({"id": tableId})
+    .del()
+}
+
 module.exports = {
     list,
     update,
     findTable,
-    create
+    create,
+    delete: destroy
 }

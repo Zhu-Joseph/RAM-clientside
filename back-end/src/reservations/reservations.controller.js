@@ -54,6 +54,25 @@ function notOperatingHours(req, res, next) {
   next()
 }
 
+async function reservationExist(req, res, next) {
+  const id = req.params.reservation_id
+  const foundReservation = await service.findId(id)
+
+  if(!foundReservation) {
+    next({status: 400, message: "Sorry we could not locate your reservation"})
+  }
+  next()
+}
+
+function validStatus(req, res, next) {
+  const newStatus = req.body.data.status
+
+  if(newStatus !== "booked" && newStatus !== "seated" && newStatus !== "finished" && newStatus !== "cancelled") {
+    next({status: 400, message: "Invalid reservation status"})
+  }
+  next()
+}
+
 
 //VALIDATION FOR DATE AND TIME
 const dateFormat = /\d\d\d\d-\d\d-\d\d/;
@@ -126,14 +145,24 @@ async function create(req, res, next) {
 }
 
 async function findId(req, res, next) {
-  const id = req.params.reservationsId
+  const id = req.params.reservation_id
   const people = await service.findId(id)
+
   res.json({data: people})
+}
+
+async function updateStatus(req, res, next) {
+  const id = req.params.reservation_id
+  const newStatus = req.body.data.status
+  const updatedReservation = await service.updateStatus(id, newStatus)
+
+  res.json({data: updatedReservation})
 }
 
 
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [validateReservation, closedTuesdays, notOperatingHours, pastReservation, create],
+  updateStatus: [reservationExist, validStatus, asyncErrorBoundary(updateStatus)],
   findId
 };
