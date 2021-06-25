@@ -7,6 +7,10 @@
 const router = require("express").Router();
 const controller = require("./reservations.controller");
 
+router.route("/:reservation_id/edit")
+    .put(controller.updateReservation)
+    .get(controller.findId)
+
 router.route("/:reservation_id/status")
     .put(controller.updateStatus)
 

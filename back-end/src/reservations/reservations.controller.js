@@ -73,9 +73,18 @@ function validStatus(req, res, next) {
   next()
 }
 
+async function bookedOnly(req, res, next) {
+  const id = req.params.reservation_id
+  const foundReservation = await service.findId(id)
+
+  if(foundReservation.status !== "booked") {
+    next({status: 400, message: "Sorry we can only edit reservations that are currently booked and not yet seated"})
+  }
+  next()
+}
 
 //VALIDATION FOR DATE AND TIME
-const dateFormat = /\d\d\d\d-\d\d-\d\d/;
+// const dateFormat = /\d\d\d\d-\d\d-\d\d/;
 const timeFormat = /\d\d:\d\d/;
 
 function asDateString(date) {
@@ -84,9 +93,9 @@ function asDateString(date) {
     .padStart(2, "0")}-${date.getDate().toString(10).padStart(2, "0")}`;
 }
 
-function formatAsDate(dateString) {
-  return dateString.match(dateFormat)[0];
-}
+// function formatAsDate(dateString) {
+//   return dateString.match(dateFormat)[0];
+// }
 
 function formatAsTime(timeString) {
   return timeString.match(timeFormat)[0];
@@ -159,10 +168,19 @@ async function updateStatus(req, res, next) {
   res.json({data: updatedReservation})
 }
 
+async function updateReservation(req, res, next) {
+  const id = req.params.reservation_id
+  const update = req.body.data
+  const updatedReservation = await service.updateReservation(id, update)
+
+  res.json({data: updatedReservation})
+}
+
 
 module.exports = {
   list: asyncErrorBoundary(list),
+  findId,
   create: [validateReservation, closedTuesdays, notOperatingHours, pastReservation, create],
   updateStatus: [reservationExist, validStatus, asyncErrorBoundary(updateStatus)],
-  findId
+  updateReservation: [reservationExist, bookedOnly, validStatus, asyncErrorBoundary(updateReservation)] 
 };

@@ -6,7 +6,7 @@ import {updateStatus, updateTable} from "../utils/api"
 export default function ReservationSeats() {
     const [tables, setTables] = useState([])
     const [error, setError] = useState(null);
-    const [reservationTable, setReservationTable] = useState("")//MAY UPDATE DEFAULT
+    const [reservationTable, setReservationTable] = useState("")
     const [reservation, setReservation] = useState([])
     const [updateInfo, setUpdateInfo] = useState({})
     const {reservation_id} = useParams()

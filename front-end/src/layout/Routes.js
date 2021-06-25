@@ -7,6 +7,7 @@ import NotFound from "./NotFound";
 import NewReservations from "../reservations/NewReservations"
 import NewTables from "../tables/NewTables";
 import Search from "../search/Search"
+import EditReservations from "../reservations/EditReservations";
 import { today } from "../utils/date-time";
 
 
@@ -29,11 +30,9 @@ function Routes() {
       <Route path="/reservations/:reservation_id/seat">
         <ReservationSeats />
       </Route>
-
-      {/* <Route path="/reservations/:reservation_id/edit">
-        <Reservations />
-      </Route> */}
-
+      <Route path="/reservations/:reservation_id/edit">
+        <EditReservations />
+      </Route>
       <Route path="/dashboard">
         <Dashboard date={today()} />
       </Route>

@@ -10,6 +10,7 @@ function listDates(date) {
     .select("*")
     .where({"reservation_date": date})
     .whereNot({"status": "finished"})
+    .whereNot({"status": "cancelled"})
     .orderBy("reservation_time")
 }
 
@@ -40,9 +41,17 @@ function findId(id) {
 
 function updateStatus(reservationId, newStatus) {
     return knex("reservations")
+    .select("*")
     .where({"id": reservationId})
     .update({"status": newStatus})
 }
+
+function updateReservation(reservationId, update) {
+    return knex("reservations")
+    .select("*")
+    .where({"id": reservationId})
+    .update(update,"*")
+} 
 
 module.exports = {
     list,
@@ -51,7 +60,8 @@ module.exports = {
     find,
     findResvSize,
     findId,
-    updateStatus
+    updateStatus,
+    updateReservation
 }
 
 

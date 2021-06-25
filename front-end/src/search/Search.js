@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
-import { listReservations } from "../utils/api";
+import { listReservations, updateStatus } from "../utils/api";
 import {validateSearch} from "../utils/handlers"
 
 export default function Search() {
@@ -56,8 +56,21 @@ export default function Search() {
         }
       }
 
+
+
       const list = reservations.map((reservation) => {
         const reservation_id = reservation.id//TO MAKE SURE TEST PASSES AND RUNS
+
+        const handleCancel = () => {
+          const abortController = new AbortController();
+          const result = window.confirm("Do you want to cancel this reservation? This cannot be undone.")
+    
+          if(result) {
+              updateStatus(reservation_id, {data: {"status": "cancelled"}}, abortController.signal)
+              .then(loadDashboard)
+          }
+        }
+
         return (
             <li key={reservation.id}>
               {`First Name: ${reservation.first_name}
@@ -67,10 +80,21 @@ export default function Search() {
                Time: ${reservation.reservation_time}
                Party Size: ${reservation.people}
                Status: ${reservation.status}`}
-              {reservation.status === "booked" ? 
-              <button>
-                <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
-              </button>: null}    
+
+              {reservation.status === "booked" ? //TERNARY FOR SEAT AND EDIT BUTTON
+              <div>
+                  <button>
+                      <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
+                  </button>
+                  <button>
+                      <Link to={`/reservations/${reservation_id}/edit`}>Edit</Link>
+                  </button>
+              </div>
+              : null}
+
+              <button data-reservation-id-cancel={reservation.reservation_id} onClick={handleCancel}>
+                  Cancel
+              </button> 
             </li>
           )
       })

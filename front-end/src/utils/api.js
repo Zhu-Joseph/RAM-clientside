@@ -127,3 +127,31 @@ export async function updateStatus(reservationId, newStatus, signal) {
   }
   return await fetchJson(url, options, [])
 }
+
+//TO FULLY UPDATE RESERVATION
+export async function updateReservation(reservationId, updateInfo, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservationId}/edit`
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(updateInfo),
+    signal,
+  }
+  return await fetchJson(url, options, [])
+}
+
+//TO GET RESERVATION
+// export async function getReservationEdit(reservationId, signal) {
+//   const url = `${API_BASE_URL}/reservations/${reservationId}/edit`
+//   const
+// }
+
+export async function listReservationEdit(reservationId, params, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations/${reservationId}/edit`);
+  Object.entries(params).forEach(([key, value]) =>
+    url.searchParams.append(key, value.toString())
+  );
+  return await fetchJson(url, { headers, signal }, [])
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+}

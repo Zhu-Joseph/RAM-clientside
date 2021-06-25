@@ -18,18 +18,32 @@ export default function Reservations (props) {
 
     return (
         <li key={reservation.id}>
-        {`First Name: ${reservation.first_name}
-         Last Name: ${reservation.last_name}
-         Phone: ${reservation.mobile_number}
-         Date: ${reservation.reservation_date}
-         Time: ${reservation.reservation_time}
-         Party Size: ${reservation.people}
-         Status: ${reservation.status}`}
-         {reservation.status === "booked" ? 
-          <button>
-            <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
-          </button>: null}
-          <button onClick={handleCancel}>Cancel</button>
-      </li>
+            <div>Name: {reservation.first_name} {reservation.last_name}
+                    {reservation.status === "booked" ? //TERNARY FOR SEAT AND EDIT BUTTON
+                <div>
+                    <button>
+                        <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
+                    </button>
+                    <button>
+                        <Link to={`/reservations/${reservation_id}/edit`}>Edit</Link>
+                    </button>
+                </div>
+                : null}
+                <button data-reservation-id-cancel={reservation.reservation_id} onClick={handleCancel}>
+                    Cancel
+                </button>
+            </div>
+            
+            <div>Reservation Time: {reservation.reservation_time}</div>
+            
+            <div>Party Size: {reservation.people}</div>
+            <div>Phone: {reservation.mobile_number}</div>
+            <div>Date: {reservation.reservation_date}</div>
+            <div>Status: {reservation.status}</div>
+
+
+
+
+        </li>
     )
 }

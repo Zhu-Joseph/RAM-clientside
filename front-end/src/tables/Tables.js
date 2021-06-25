@@ -1,6 +1,5 @@
 import React from "react"
-import {Link} from "react-router-dom";
-import { listReservations, deleteTable, updateStatus} from "../utils/api";
+import {deleteTable, updateStatus} from "../utils/api";
 
 export default function Tables (props) {
     const {table} = props
@@ -9,7 +8,7 @@ export default function Tables (props) {
     return (
         <li key={table_id}>
           Table: {table.table_name} Status: {
-          table.occupied ? <div>"Occupied"<button onClick={(() => {
+          table.occupied ? <div>"Occupied"<button data-table-id-finish={table.table_id} onClick={(() => {
             const result = window.confirm("Is this table ready to seat new guests? This cannot be undone.")
 
             if(result) {
