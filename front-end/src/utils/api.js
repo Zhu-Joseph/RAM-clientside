@@ -68,6 +68,14 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
+//TO GET TABLES
+export async function listTables() {
+  const url = `${API_BASE_URL}/tables`
+  const getTables = await fetch(url)
+  const data = await getTables.json()
+  return data 
+}
+
 // TO CREATE A NEW RESERVATION
 export async function createReservations(reservation, signal) {
   const url = `${API_BASE_URL}/reservations`
@@ -140,12 +148,18 @@ export async function updateReservation(reservationId, updateInfo, signal) {
   return await fetchJson(url, options, [])
 }
 
-//TO GET RESERVATION
-// export async function getReservationEdit(reservationId, signal) {
-//   const url = `${API_BASE_URL}/reservations/${reservationId}/edit`
-//   const
-// }
+//TO GET RESERVATION FOR SEATING
+export async function listReservationSeat(reservationId, params, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations/${reservationId}/seat`);
+  Object.entries(params).forEach(([key, value]) =>
+    url.searchParams.append(key, value.toString())
+  );
+  return await fetchJson(url, { headers, signal }, [])
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+}
 
+//TO GET RESERVATION FOR EDITING
 export async function listReservationEdit(reservationId, params, signal) {
   const url = new URL(`${API_BASE_URL}/reservations/${reservationId}/edit`);
   Object.entries(params).forEach(([key, value]) =>
@@ -155,3 +169,4 @@ export async function listReservationEdit(reservationId, params, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+

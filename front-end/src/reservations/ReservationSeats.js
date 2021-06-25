@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {useHistory, useParams} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
-import {updateStatus, updateTable} from "../utils/api"
+import {updateStatus, updateTable, listReservationSeat, listTables} from "../utils/api"
 
 export default function ReservationSeats() {
     const [tables, setTables] = useState([])
@@ -12,34 +12,29 @@ export default function ReservationSeats() {
     const {reservation_id} = useParams()
     const history = useHistory()
 
-    const url = "http://localhost:5000/tables"
-    const url2 = `http://localhost:5000/reservations/${reservation_id}/seat`
-
     useEffect(loadTables, [])
     useEffect(getReservation, [])
 
     function loadTables() {
-        const abortController = new AbortController();
+        const abortController = new AbortController()
         setError(null)
-        fetch(url)
-        .then((response => response.json()))
-        // .then((tables => setTables(tables.data))) MAY DELETE
-        .then((tables) => {
-            const info = tables.data
-            setTables(info)
-            setUpdateInfo(info[0])
-            setReservationTable(`${info[0].id} ${info[0].capacity}`)
-        })
-        .catch(setError)
-        return () => abortController.abort();
+        listTables()
+            .then((tables) => {
+                const info = tables.data
+                setTables(info)
+                setUpdateInfo(info[0])
+                setReservationTable(`${info[0].id} ${info[0].capacity}`)
+            })
+            .catch(setError)
+
+        return () => abortController.abort()
     }
 
     function getReservation() {
         const abortController = new AbortController()
-        fetch(url2)
-        .then((response => response.json()))
-        .then((table => setReservation(table.data)))
-        .catch(setError)
+        listReservationSeat(reservation_id, ({id: reservation_id}), abortController.signal)
+            .then(setReservation)
+            .catch(setError)
         return () => abortController.abort();
     }
 
@@ -84,15 +79,15 @@ Please choose another table.`)
     if(tables) {
         const list = tables.map((table) => {
             return (
-                <option key={table.id} value={`${table.id} ${table.capacity}`}>
+                <option class="dropdown-item" key={table.id} value={`${table.id} ${table.capacity}`}>
                     Table: {table.table_name} - Capacity: {table.capacity}
                 </option>
             )
         })
         return (
-            <div>
+            <div class="btn-group">
                 <form onSubmit={handleSubmit}>
-                    <select value={reservationTable} onChange={handleChange} >
+                    <select class="btn btn-outline-info dropdown-toggle" value={reservationTable} onChange={handleChange} >
                         {list}
                     </select>
                     <br/>
@@ -102,8 +97,6 @@ Please choose another table.`)
             </div>
         )
     }
-
-    
 
     return (
         <div>

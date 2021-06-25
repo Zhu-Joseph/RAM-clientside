@@ -65,26 +65,25 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
     setReservationDate(today())
   }
 
-    const list = reservations.map((reservation) => {
-      return (
-        <Reservations 
-          reservation={reservation}
-          loadDashboard={loadDashboard}
-        /> 
-        )
-    })
-   
-    const listTable = tables.map((table) => {
-
-      return (//PASSING IN PROPS TO MAKE CODE CLEANER
-        <Tables 
-          table={table}
-          loadTables={loadTables}
-          loadDashboard={loadDashboard}
-          setReservationsError={setReservationsError}
-        />
+  const list = reservations.map((reservation) => {
+    return (//PASSING IN PROPS TO MAKE CODE CLEANER
+      <Reservations 
+        reservation={reservation}
+        loadDashboard={loadDashboard}
+      /> 
       )
-    })
+  })
+   
+  const listTable = tables.map((table) => {
+    return (//PASSING IN PROPS TO MAKE CODE CLEANER
+      <Tables 
+        table={table}
+        loadTables={loadTables}
+        loadDashboard={loadDashboard}
+        setReservationsError={setReservationsError}
+      />
+    )
+  })
 
   return (
     <main>
@@ -93,21 +92,32 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
         <h4 className="mb-0" value={reservationDate}>{`Reservations for ${reservationDate}`}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
+
+      {/* LIST OF RESERVATIONS */}
       <ol>{list}</ol>
-        <button onClick={handlePrev}>
+
+      {/* PREVIOUS TODAY NEXT BUTTONS BELOW RESERVATION LIST */}
+      <div class="btn-group" role="group" aria-label="Basic outlined example">
+        <button onClick={handlePrev} type="button" class="btn btn-outline-warning">
           <Link to={`dashboard?date=${previous(reservationDate)}`}>Previous</Link>
         </button>
-        <br/>
-        <button onClick={handleToday}>
+        <button onClick={handleToday} type="button" class="btn btn-outline-warning">
           <Link to={`dashboard?date=${today()}`}>Today</Link>
         </button>
-        <br/>
-        <button onClick={handleNext}>
+        <button onClick={handleNext} type="button" class="btn btn-outline-warning">
           <Link to={`dashboard?date=${next(reservationDate)}`}>Next</Link>
         </button>
+      </div>
+      
+
+    {/* LIST OF TABLES */}
+      <div>
+        <br/>
+        <h4 className="mb-0">Tables</h4>
         <ol>
           {listTable}
         </ol>
+      </div>
     </main>
   )
 }

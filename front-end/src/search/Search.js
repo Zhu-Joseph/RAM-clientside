@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import Reservations from "../reservations/Reservations";
 import { listReservations, updateStatus } from "../utils/api";
 import {validateSearch} from "../utils/handlers"
+import ErrorAlert from "../layout/ErrorAlert";
 
 export default function Search() {
     const initialState = {
@@ -56,49 +57,17 @@ export default function Search() {
         }
       }
 
-
-
       const list = reservations.map((reservation) => {
-        const reservation_id = reservation.id//TO MAKE SURE TEST PASSES AND RUNS
-
-        const handleCancel = () => {
-          const abortController = new AbortController();
-          const result = window.confirm("Do you want to cancel this reservation? This cannot be undone.")
-    
-          if(result) {
-              updateStatus(reservation_id, {data: {"status": "cancelled"}}, abortController.signal)
-              .then(loadDashboard)
-          }
-        }
-
         return (
-            <li key={reservation.id}>
-              {`First Name: ${reservation.first_name}
-               Last Name: ${reservation.last_name}
-               Phone: ${reservation.mobile_number}
-               Date: ${reservation.reservation_date}
-               Time: ${reservation.reservation_time}
-               Party Size: ${reservation.people}
-               Status: ${reservation.status}`}
-
-              {reservation.status === "booked" ? //TERNARY FOR SEAT AND EDIT BUTTON
-              <div>
-                  <button>
-                      <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
-                  </button>
-                  <button>
-                      <Link to={`/reservations/${reservation_id}/edit`}>Edit</Link>
-                  </button>
-              </div>
-              : null}
-
-              <button data-reservation-id-cancel={reservation.reservation_id} onClick={handleCancel}>
-                  Cancel
-              </button> 
-            </li>
+          <Reservations
+            reservation={reservation}
+            loadDashboard={loadDashboard}
+          />
           )
       })
 
+
+      
     if(reservations.length === 0) {
       return (
         <div>
@@ -106,9 +75,9 @@ export default function Search() {
                 <label>Search </label>
                 <input name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
                 onChange={handlePhone} value={formData.mobile_number}/>
-                <button onSubmit={handleSubmit}>Find</button>
+                <button onSubmit={handleSubmit} class="btn btn-outline-secondary">Find</button>
             </form>
-            <h4>No reservations found</h4>
+            <h4 className="mb-0">No reservations found</h4>
         </div>
       )
     }
@@ -119,8 +88,8 @@ export default function Search() {
                 <label>Search </label>
                 <input name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
                 onChange={handlePhone} value={formData.mobile_number}/>
+                <button onSubmit={handleSubmit} class="btn btn-outline-secondary">Find</button>
                 <ol>{list}</ol>
-                <button onSubmit={handleSubmit}>Find</button>
             </form>
         </div>
     )

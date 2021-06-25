@@ -15,35 +15,37 @@ export default function Reservations (props) {
             .then(props.loadDashboard)
         }
     }
-
+  
     return (
-        <li key={reservation.id}>
-            <div>Name: {reservation.first_name} {reservation.last_name}
-                    {reservation.status === "booked" ? //TERNARY FOR SEAT AND EDIT BUTTON
-                <div>
-                    <button>
-                        <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
-                    </button>
-                    <button>
-                        <Link to={`/reservations/${reservation_id}/edit`}>Edit</Link>
-                    </button>
-                </div>
-                : null}
-                <button data-reservation-id-cancel={reservation.reservation_id} onClick={handleCancel}>
-                    Cancel
-                </button>
-            </div>
-            
-            <div>Reservation Time: {reservation.reservation_time}</div>
-            
+        <li >
+            <div>Name: {reservation.first_name} {reservation.last_name}</div>        
+            <div>Reservation Time: {reservation.reservation_time}</div>           
             <div>Party Size: {reservation.people}</div>
             <div>Phone: {reservation.mobile_number}</div>
             <div>Date: {reservation.reservation_date}</div>
-            <div>Status: {reservation.status}</div>
-
-
-
-
+            <div>
+                Status: {reservation.status}
+                {reservation.status === "booked" ? //TERNARY FOR SEAT AND EDIT BUTTON
+                <>
+                    <button class="btn btn-outline-success">
+                        <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
+                    </button>
+                    <button class="btn btn-outline-dark">
+                        <Link to={`/reservations/${reservation_id}/edit`}>Edit</Link>
+                    </button>
+                    <button class="btn btn-outline-danger" 
+                        data-reservation-id-cancel={reservation.reservation_id} 
+                        onClick={handleCancel}>
+                        Cancel
+                    </button>
+                </>
+                : 
+                <button class="btn btn-outline-danger" 
+                    data-reservation-id-cancel={reservation.reservation_id} 
+                    onClick={handleCancel}>
+                        Cancel
+                </button>}
+            </div>
         </li>
     )
 }

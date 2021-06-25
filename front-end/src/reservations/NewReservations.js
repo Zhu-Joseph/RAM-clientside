@@ -127,10 +127,10 @@ export default function NewReservations() {
                     Party Size:
                     <input name="people" type="number" 
                     value={formData.people} onChange={handleChange}/>
-                </div>                           
-                <button type="submit" onSubmit={submitHandler}>Submit</button>
-                <button onClick={cancelHandler}>Cancel</button>                
+                </div>
+                <button type="submit" onSubmit={submitHandler}>Submit</button>                                         
             </form>
+            <button onClick={cancelHandler}>Cancel</button>  
         </div>
     )
 }

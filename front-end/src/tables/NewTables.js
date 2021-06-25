@@ -57,7 +57,6 @@ export default function NewTables() {
     }
 
     function cancelHandler() {
-        
         history.goBack()
         setFormData(initialState)
     }
