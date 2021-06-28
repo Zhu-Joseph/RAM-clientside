@@ -15,7 +15,6 @@ export default function EditReservations () {
     const {reservation_id} = useParams()
     const history = useHistory()
 
-
     useEffect(loadReservation, [])
 
     function loadReservation() {
@@ -101,48 +100,48 @@ export default function EditReservations () {
     return (
         <div>
             <form onSubmit={submitHandler}>
-                <div>
-                    First Name:
+            <div className="row mb-3">
+                    <label className="col-sm-2 col-form-label">First Name:</label>
                     <input name="first_name" type="text" placeholder="first name" 
                     value={formData.first_name} onChange={handleChange}/>
                 </div>
-                <div>
-                    Last Name: 
+                <div className="row mb-3">
+                    <label className="col-sm-2 col-form-label">Last Name:</label>                
                     <input name="last_name" type="text" placeholder="last name"
                     value={formData.last_name} onChange={handleChange}/>
                 </div>
-                <div>
-                    Phone: 
+                <div className="row mb-3">
+                    <label className="col-sm-2 col-form-label">Phone:</label>
                     <input name="mobile_number" type="tel" placeholder="123-456-7890" onChange={handlePhone}
-                    value={formData.mobile_number}/>                    
+                     value={formData.mobile_number}/>                    
                 </div>
-                <div>
-                    Date:
-                    <input name="reservation_date" type="date" placeholder={formData.reservation_date}
+                <div className="row mb-3">
+                    <label className="col-sm-2 col-form-label">Date:</label>
+                    <input name="reservation_date" type="date" placeholder="YYYY-MM-DD" 
                     value={formData.reservation_date} onChange={handleDate}/>
                 </div>
-                <div>
-                    Time:
+                <div className="row mb-3">
+                    <label className="col-sm-2 col-form-label">Time:</label>
                     <input name="reservation_time" type="time" placeholder="HH:MM" 
                     value={formData.reservation_time} onChange={handleChange}/>
                 </div>
-                <div>
-                    Party Size:
+                <div className="row mb-3">
+                    <label className="col-sm-2 col-form-label">Party Size:</label>
                     <input name="people" type="number" 
                     value={formData.people} onChange={handleChange}/>
                 </div>
                 <div>
-                    Status:
-                    <select name="status" value={formData.status} onChange={handleChange}>
-                        <option value="booked">Booked</option>
+                    <label>Status:</label>
+                    <select className="form-select form-select-lg mb-3" name="status" value={formData.status} onChange={handleChange}>
+                        <option className="col-sm-2 col-form-label" value="booked">Booked</option>
                         <option value="seated">Seated</option>
                         <option value="finished">Finished</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
                 </div>      
-                <button type="submit" onSubmit={submitHandler}>Submit</button>
+                <button type="submit" className="btn btn-outline-success" onSubmit={submitHandler}>Submit</button>
             </form>
-            <button onClick={cancelHandler}>Cancel</button>
+            <button className="btn btn-outline-danger" onClick={cancelHandler}>Cancel</button>
         </div>
     )   
 }

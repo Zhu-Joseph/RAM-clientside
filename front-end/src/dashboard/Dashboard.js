@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import queryString from "query-string"
-import { listReservations} from "../utils/api";
+import { listReservations, listTables} from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { today, next, previous } from "../utils/date-time";
 
@@ -42,16 +42,14 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
     return () => abortController.abort();
   }
 
-  function loadTables() {
-    const abortController = new AbortController();
-    setReservationsError(null)
-    fetch("http://localhost:5000/tables")
-    .then((response => response.json()))
-    .then((tables => setTables(tables.data)))
-    .catch(setReservationsError)
-    return () => abortController.abort();
+function loadTables() {
+  const abortController = new AbortController()
+  setReservationsError(null)
+  listTables()
+      .then((tables) => setTables(tables.data))
+      .catch(setReservationsError)
+  return () => abortController.abort()
 }
-
 
   const handlePrev = () => {
      newDate ? setReservationDate(previous(newDate)) : setReservationDate(previous(date))
@@ -94,17 +92,17 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
       <ErrorAlert error={reservationsError} />
 
       {/* LIST OF RESERVATIONS */}
-      <ol>{list}</ol>
+      <ol className="list-unstyled">{list}</ol>
 
       {/* PREVIOUS TODAY NEXT BUTTONS BELOW RESERVATION LIST */}
-      <div class="btn-group" role="group" aria-label="Basic outlined example">
-        <button onClick={handlePrev} type="button" class="btn btn-outline-warning">
+      <div className="btn-group" role="group" aria-label="Basic outlined example">
+        <button onClick={handlePrev} type="button" className="btn btn-outline-warning">
           <Link to={`dashboard?date=${previous(reservationDate)}`}>Previous</Link>
         </button>
-        <button onClick={handleToday} type="button" class="btn btn-outline-warning">
+        <button onClick={handleToday} type="button" className="btn btn-outline-warning">
           <Link to={`dashboard?date=${today()}`}>Today</Link>
         </button>
-        <button onClick={handleNext} type="button" class="btn btn-outline-warning">
+        <button onClick={handleNext} type="button" className="btn btn-outline-warning">
           <Link to={`dashboard?date=${next(reservationDate)}`}>Next</Link>
         </button>
       </div>
@@ -114,7 +112,7 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
       <div>
         <br/>
         <h4 className="mb-0">Tables</h4>
-        <ol>
+        <ol className="list-group">
           {listTable}
         </ol>
       </div>

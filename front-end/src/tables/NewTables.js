@@ -68,21 +68,27 @@ export default function NewTables() {
     }
 
     return (
-        <div>
-            <form onSubmit={submitHandler}>
-                <div>
-                    <label>Table Name:</label>
-                    <input name="table_name" type="text" 
-                    onChange={handleChange} value={formData.table_name}/>
+        <div >
+            <form onSubmit={submitHandler} >
+                <div className="row mb-3">
+                    <label className="col-sm-2 col-form-label">Table Name:</label>
+                    <div>
+                        <input name="table_name" type="text" className="col form-control"
+                        onChange={handleChange} value={formData.table_name}/>
+                    </div>
                 </div>
-                <div>
-                    <label>Capacity:</label>
-                    <input name="capacity" type="number" 
-                    onChange={handleCapacity} value={formData.capacity} />
+                <div className="row mb-3">
+                    <label className="col-sm-2 ">Capacity:</label>
+                    <div>
+                        <input name="capacity" type="number" className="col form-control"
+                        onChange={handleCapacity} value={formData.capacity} />
+                    </div>                  
                 </div>
-                <button type="submit" onSubmit={submitHandler}>Submit</button>
+                <button type="button" className="btn btn-outline-success" type="submit" onSubmit={submitHandler}>Submit</button>
             </form>
-            <button onClick={cancelHandler}>Cancel</button>
+            <div>
+                <button type="button" className="btn btn-outline-danger" onClick={cancelHandler}>Cancel</button>
+            </div>
         </div>
     )
 }

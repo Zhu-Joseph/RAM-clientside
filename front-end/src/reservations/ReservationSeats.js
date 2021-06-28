@@ -40,6 +40,7 @@ export default function ReservationSeats() {
 
     function handleSubmit(event) {
         event.preventDefault()
+
         const abortController = new AbortController()
 
         if(reservation.people > updateInfo.capacity) {
@@ -50,11 +51,13 @@ Please choose another table.`)
         else {
             const tableId = updateInfo.id
             updateTable(tableId, {data: reservation}, abortController.signal)
-            updateStatus(reservation_id, {data: {"status": "seated"}}, abortController.signal)
-            .then(() => {
-                history.push("/dashboard")
-            })
-            .catch(setError)
+                .then(() => {
+                    updateStatus(reservation_id, {data: {"status": "seated"}}, abortController.signal)
+                })
+                .then(() => {
+                    history.push("/dashboard")
+                })
+                .catch(setError)
         }
     }
 
@@ -69,7 +72,7 @@ Please choose another table.`)
     function cancelHandler() {
         history.goBack()
     }
-
+    
     if(error) {
         return (
             <ErrorAlert error={error} />
@@ -79,21 +82,22 @@ Please choose another table.`)
     if(tables) {
         const list = tables.map((table) => {
             return (
-                <option class="dropdown-item" key={table.id} value={`${table.id} ${table.capacity}`}>
+                <option className="dropdown-item" key={table.id} value={`${table.id} ${table.capacity}`}>
                     Table: {table.table_name} - Capacity: {table.capacity}
                 </option>
             )
         })
         return (
-            <div class="btn-group">
+            <div className="btn-group">
                 <form onSubmit={handleSubmit}>
-                    <select class="btn btn-outline-info dropdown-toggle" value={reservationTable} onChange={handleChange} >
+                    <select className="form-select form-select-lg mb-3" value={reservationTable} onChange={handleChange} >
                         {list}
                     </select>
-                    <br/>
-                    <button onSubmit={handleSubmit}>Submit</button> 
+                    <button className="btn btn-outline-success" type="submit" onSubmit={handleSubmit}>Submit</button> 
                 </form>
-                <button onClick={cancelHandler}>Cancel</button>
+                <div>
+                    <button type="button" className="btn btn-outline-danger" onClick={cancelHandler}>Cancel</button>
+                </div>          
             </div>
         )
     }

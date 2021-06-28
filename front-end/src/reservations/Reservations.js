@@ -27,20 +27,20 @@ export default function Reservations (props) {
                 Status: {reservation.status}
                 {reservation.status === "booked" ? //TERNARY FOR SEAT AND EDIT BUTTON
                 <>
-                    <button class="btn btn-outline-success">
+                    <button className="btn btn-outline-success">
                         <Link to={`/reservations/${reservation_id}/seat`}>Seat</Link>
                     </button>
-                    <button class="btn btn-outline-dark">
+                    <button className="btn btn-outline-dark">
                         <Link to={`/reservations/${reservation_id}/edit`}>Edit</Link>
                     </button>
-                    <button class="btn btn-outline-danger" 
+                    <button className="btn btn-outline-danger" 
                         data-reservation-id-cancel={reservation.reservation_id} 
                         onClick={handleCancel}>
                         Cancel
                     </button>
                 </>
                 : 
-                <button class="btn btn-outline-danger" 
+                <button className="btn btn-outline-danger" 
                     data-reservation-id-cancel={reservation.reservation_id} 
                     onClick={handleCancel}>
                         Cancel

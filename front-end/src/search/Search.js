@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import Reservations from "../reservations/Reservations";
-import { listReservations, updateStatus } from "../utils/api";
+import { listReservations } from "../utils/api";
 import {validateSearch} from "../utils/handlers"
 import ErrorAlert from "../layout/ErrorAlert";
 
@@ -71,11 +71,13 @@ export default function Search() {
     if(reservations.length === 0) {
       return (
         <div>
-          <form onSubmit={handleSubmit}>
-                <label>Search </label>
-                <input name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
-                onChange={handlePhone} value={formData.mobile_number}/>
-                <button onSubmit={handleSubmit} class="btn btn-outline-secondary">Find</button>
+          <form onSubmit={handleSubmit} className="row mb-3">
+                <label className="col-sm-1 col-form-label">Search </label>
+                <div>
+                  <input className="col form-control" name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
+                  onChange={handlePhone} value={formData.mobile_number}/>
+                </div>
+                <button onSubmit={handleSubmit} className="btn btn-secondary">Find</button>
             </form>
             <h4 className="mb-0">No reservations found</h4>
         </div>
@@ -84,13 +86,15 @@ export default function Search() {
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
-                <label>Search </label>
-                <input name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
-                onChange={handlePhone} value={formData.mobile_number}/>
-                <button onSubmit={handleSubmit} class="btn btn-outline-secondary">Find</button>
-                <ol>{list}</ol>
+            <form onSubmit={handleSubmit} className="row mb-3">
+                <label className="col-sm-1 col-form-label">Search </label>
+                <div>
+                  <input className="col form-control" name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
+                  onChange={handlePhone} value={formData.mobile_number}/>
+                </div>
+                <button onSubmit={handleSubmit} className="btn btn-secondary">Find</button>
             </form>
+            <ol>{list}</ol>
         </div>
     )
 }
