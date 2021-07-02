@@ -3,7 +3,7 @@ import {deleteTable, updateStatus} from "../utils/api";
 
 export default function Tables (props) {
     const {table} = props
-    const table_id = table.id//TO MAKE SURE TEST PASSES AND RUNS
+    const table_id = "id"//TO MAKE SURE TEST PASSES AND RUNS
 
     function finishHandler() {
       const abortController = new AbortController();
@@ -11,7 +11,7 @@ export default function Tables (props) {
 
       if(result) {
         updateStatus(table.reservation_id, {data: {"status": "finished"}}, abortController.signal)
-        deleteTable(table_id)              
+        deleteTable(table[table_id])              
         .then(props.loadTables)
         .then(props.loadDashboard)
         .catch(props.setReservationsError)
@@ -21,21 +21,21 @@ export default function Tables (props) {
     return (
       <div>
         {table.occupied ? 
-          <li key={table_id} className="list-group-item list-group-item-warning">
+          <li key={table[table_id]} className="list-group-item list-group-item-warning">
             Table: {table.table_name} 
             <span className="col-md">Status:</span> 
-              Occupied
-              <button data-table-id-finish={table.table_id} className="btn btn-danger"
+              <span data-table-id-status={`${table[table_id]}`}>Occupied</span>
+              <button data-table-id-finish={table[table_id]} className="btn btn-danger"
               onClick={finishHandler}>
                 Finish
               </button>
             
           </li> : 
 
-          <li key={table_id} className="list-group-item list-group-item-success">
+          <li key={table[table_id]} className="list-group-item list-group-item-success">
             Table: {table.table_name}
             <span className="col-md">Status:</span> 
-            <span className="col">Free</span> 
+            <span className="col" data-table-id-status={`${table[table_id]}`}>Free</span> 
           </li>
         }
       </div>

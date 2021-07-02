@@ -1,23 +1,25 @@
 import {formatAsTime, today} from "../utils/date-time"
 
-export function validateTable (formData) {//TO VALIDATE THE DATA INPUT FROM THE FORM
-    let incomplete = []
+export function validateTable (formData, error) {//TO VALIDATE THE DATA INPUT FROM THE FORM
+    // let incomplete = []
 
     if(formData.table_name.length < 2) {
-        incomplete.push(`Please have at least two characters for you table name`)
+        error.message.push(`Please have at least two characters for you table name`)
     }
 
     if(formData.capacity < 1) {
-        incomplete.push(`Minimum party size of 1`)
+        error.message.push(`Minimum party size of 1`)
     }
 
-    if(incomplete.length === 1) {
-        window.alert(`${incomplete[0]}`)
+    if(error.message.length === 1) {
+        // window.alert(`${incomplete[0]}`)
         return false
     } 
     
-    else if (incomplete.length === 2) {
-        window.alert(`${incomplete[0]} and have a ${incomplete[1].toLowerCase()}`)
+    else if (error.message.length === 2) {
+        const array = error.message.join(", ").toLowerCase()
+        const errorMessage = array.charAt(0).toUpperCase() + array.slice(1)
+        error.message = errorMessage
         return false
     }
     return true 

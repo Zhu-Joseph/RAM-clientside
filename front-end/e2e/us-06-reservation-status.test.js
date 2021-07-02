@@ -60,13 +60,13 @@ describe("US-06 - Reservation status - E2E", () => {
         path: ".screenshots/us-06-dashboard-displays-status.png",
         fullPage: true,
       });
-
+     
       const containsBooked = await containsText(
         page,
-        `[data-reservation-id-status="${reservation.reservation_id}"]`,
+        `[data-reservation-id-status="${reservation.id}"]`,
         "booked"
       );
-
+      
       expect(containsBooked).toBe(true);
     });
 
@@ -76,7 +76,7 @@ describe("US-06 - Reservation status - E2E", () => {
         fullPage: true,
       });
 
-      await seatReservation(reservation.reservation_id, table.table_id);
+      await seatReservation(reservation.id, table.id);
 
       await page.reload({ waitUntil: "networkidle0" });
 
@@ -87,20 +87,20 @@ describe("US-06 - Reservation status - E2E", () => {
 
       const containsSeated = await containsText(
         page,
-        `[data-reservation-id-status="${reservation.reservation_id}"]`,
+        `[data-reservation-id-status="${reservation.id}"]`,
         "seated"
       );
 
       expect(containsSeated).toBe(true);
       expect(
         await page.$(
-          `[href="/reservations/${reservation.reservation_id}/seat"]`
+          `[href="/reservations/${reservation.id}/seat"]`
         )
       ).toBeNull();
     });
 
     test("Finishing the table removes the reservation from the list", async () => {
-      await seatReservation(reservation.reservation_id, table.table_id);
+      await seatReservation(reservation.id, table.id);
 
       await page.reload({ waitUntil: "networkidle0" });
 
@@ -109,7 +109,7 @@ describe("US-06 - Reservation status - E2E", () => {
         fullPage: true,
       });
 
-      const finishButtonSelector = `[data-table-id-finish="${table.table_id}"]`;
+      const finishButtonSelector = `[data-table-id-finish="${table.id}"]`;
       await page.waitForSelector(finishButtonSelector);
 
       page.on("dialog", async (dialog) => {
@@ -129,7 +129,7 @@ describe("US-06 - Reservation status - E2E", () => {
 
       expect(
         await page.$(
-          `[data-reservation-id-status="${reservation.reservation_id}"]`
+          `[data-reservation-id-status="${reservation.id}"]`
         )
       ).toBeNull();
     });

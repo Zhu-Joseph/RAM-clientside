@@ -4,7 +4,7 @@ exports.up = function(knex) {
       table.increments("id").primary()
       table.string("table_name",15).notNullable()
       table.integer("capacity").notNullable()
-      table.boolean("occupied").notNullable()
+      table.boolean("occupied").defaultTo(false).notNullable()
       table.integer("reservation_id")
       table.timestamps(true,true)
       table.foreign("reservation_id").references("id").inTable("reservations")
@@ -12,5 +12,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable("tables")
+  return knex.schema.dropTableIfExists("tables")
 };

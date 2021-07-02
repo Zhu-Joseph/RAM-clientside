@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {useHistory, useParams} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
-import {updateStatus, updateTable, listReservationSeat, listTables} from "../utils/api"
+import {updateTable, listReservationSeat, listTables} from "../utils/api"
 
 export default function ReservationSeats() {
     const [tables, setTables] = useState([])
@@ -12,9 +12,9 @@ export default function ReservationSeats() {
     const {reservation_id} = useParams()
     const history = useHistory()
 
-    useEffect(loadTables, [])
+    useEffect(loadTables, [])// eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(getReservation, [])
-
+ 
     function loadTables() {
         const abortController = new AbortController()
         setError(null)
@@ -38,24 +38,30 @@ export default function ReservationSeats() {
         return () => abortController.abort();
     }
 
+    if(reservation.status === "booked") {
+        setReservation({ ...reservation, status: "seated", })
+    }
+    
     function handleSubmit(event) {
         event.preventDefault()
 
         const abortController = new AbortController()
 
-        if(reservation.people > updateInfo.capacity) {
-            window.alert(`Reservation is for ${reservation.people} while the table only holds ${updateInfo.capacity}. 
-Please choose another table.`)
+        if(reservation.people > updateInfo.capacity) {//TO PASS TEST CODE, ORIGINALLY WAS A WINDOW ALERT 
+            setError({message: "Party size is greater then table capacity, choose another table."})
+            return
         }
         
         else {
             const tableId = updateInfo.id
-            updateTable(tableId, {data: reservation}, abortController.signal)
+            console.log(reservation)
+            updateTable(tableId, reservation, abortController.signal)
+            // updateStatus(reservation_id, {data: {"status": "seated"}}, abortController.signal)
                 .then(() => {
-                    updateStatus(reservation_id, {data: {"status": "seated"}}, abortController.signal)
-                })
-                .then(() => {
-                    history.push("/dashboard")
+                    history.push({
+                        pathname: "/dashboard",
+                        search:`?date=${reservation.reservation_date}`
+                    })
                 })
                 .catch(setError)
         }
@@ -64,7 +70,7 @@ Please choose another table.`)
     function handleChange({target}) {
         const value = target.value
         const putBody = value.split(" ")
- 
+        
         setReservationTable(value)
         setUpdateInfo({"id": putBody[0], "capacity": putBody[1]})
     }
@@ -81,16 +87,17 @@ Please choose another table.`)
 
     if(tables) {
         const list = tables.map((table) => {
+
             return (
-                <option className="dropdown-item" key={table.id} value={`${table.id} ${table.capacity}`}>
-                    Table: {table.table_name} - Capacity: {table.capacity}
+                <option className="dropdown-item" name="table_id" key={table.id} value={`${table.id} ${table.capacity}`}>
+                    {table.table_name} - {table.capacity}
                 </option>
             )
         })
         return (
             <div className="btn-group">
                 <form onSubmit={handleSubmit}>
-                    <select className="form-select form-select-lg mb-3" value={reservationTable} onChange={handleChange} >
+                    <select name="table_id" className="form-select form-select-lg mb-3" value={reservationTable} onChange={handleChange} >
                         {list}
                     </select>
                     <button className="btn btn-outline-success" type="submit" onSubmit={handleSubmit}>Submit</button> 

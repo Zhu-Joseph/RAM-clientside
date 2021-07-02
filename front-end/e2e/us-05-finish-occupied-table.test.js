@@ -44,7 +44,8 @@ describe("US-05 - Finish an occupied table - E2E", () => {
       table = await createTable({
         table_name: `#${Date.now().toString(10)}`,
         capacity: 99,
-        reservation_id: reservation.reservation_id,
+        reservation_id: reservation.id,
+        occupied: true
       });
 
       page = await browser.newPage();
@@ -64,13 +65,13 @@ describe("US-05 - Finish an occupied table - E2E", () => {
 
       const containsOccupied = await containsText(
         page,
-        `[data-table-id-status="${table.table_id}"]`,
+        `[data-table-id-status="${table.id}"]`,
         "occupied"
       );
 
       expect(containsOccupied).toBe(true);
 
-      const finishButtonSelector = `[data-table-id-finish="${table.table_id}"]`;
+      const finishButtonSelector = `[data-table-id-finish="${table.id}"]`;
       await page.waitForSelector(finishButtonSelector);
 
       page.on("dialog", async (dialog) => {
@@ -93,7 +94,7 @@ describe("US-05 - Finish an occupied table - E2E", () => {
 
       const containsFree = await containsText(
         page,
-        `[data-table-id-status="${table.table_id}"]`,
+        `[data-table-id-status="${table.id}"]`,
         "free"
       );
 
@@ -108,13 +109,13 @@ describe("US-05 - Finish an occupied table - E2E", () => {
 
       const containsOccupied = await containsText(
         page,
-        `[data-table-id-status="${table.table_id}"]`,
+        `[data-table-id-status="${table.id}"]`,
         "occupied"
       );
-
+      
       expect(containsOccupied).toBe(true);
 
-      const finishButtonSelector = `[data-table-id-finish="${table.table_id}"]`;
+      const finishButtonSelector = `[data-table-id-finish="${table.id}"]`;
       await page.waitForSelector(finishButtonSelector);
 
       page.on("dialog", async (dialog) => {
@@ -135,7 +136,7 @@ describe("US-05 - Finish an occupied table - E2E", () => {
 
       const containsFree = await containsText(
         page,
-        `[data-table-id-status="${table.table_id}"]`,
+        `[data-table-id-status="${table.id}"]`,
         "free"
       );
 

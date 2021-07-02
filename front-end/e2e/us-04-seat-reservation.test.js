@@ -162,13 +162,13 @@ describe("US-04 - Seat reservation - E2E", () => {
       page.on("console", onPageConsole);
       await page.setViewport({ width: 1920, height: 1080 });
       await page.goto(
-        `${baseURL}/reservations/${reservation.reservation_id}/seat`,
+        `${baseURL}/reservations/${reservation.id}/seat`,
         {
           waitUntil: "networkidle0",
         }
       );
     });
-
+    
     test("seating reservation at table #1 makes the table occupied", async () => {
       await page.waitForSelector('option:not([value=""])');
 
@@ -197,7 +197,33 @@ describe("US-04 - Seat reservation - E2E", () => {
       expect(page.url()).toContain("/dashboard");
       expect(page).toMatch(/occupied/i);
     });
-    test("cannot seat reservation at Bar #1", () => {});
+    
+    test("cannot seat reservation at Bar #1", async () => {
+      await page.waitForSelector('option:not([value=""])');
+
+      await page.screenshot({
+        path: ".screenshots/us-04-seat-capacity-reservation-start.png",
+        fullPage: true,
+      });
+
+      await selectOptionByText(page, "table_id", "Bar #1 - 1");
+
+      await page.screenshot({
+        path: ".screenshots/us-04-seat-capacity-reservation-submit-before.png",
+        fullPage: true,
+      });
+
+      await Promise.all([
+        page.click("[type=submit]"),
+      ]);
+
+      await page.screenshot({
+        path: ".screenshots/us-04-seat-capacity-reservation-submit-after.png",
+        fullPage: true,
+      });
+
+      expect(page.url()).toContain("/seat");
+    });
   });
 
   describe("/dashboard page", () => {
@@ -228,7 +254,7 @@ describe("US-04 - Seat reservation - E2E", () => {
         fullPage: true,
       });
 
-      const hrefSelector = `[href="/reservations/${reservation.reservation_id}/seat"]`;
+      const hrefSelector = `[href="/reservations/${reservation.id}/seat"]`;
 
       await page.waitForSelector(hrefSelector);
 

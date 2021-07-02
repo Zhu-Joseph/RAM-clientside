@@ -15,6 +15,7 @@ import Tables from "../tables/Tables";
  * @returns {JSX.Element}
  */
 function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [reservationDate, setReservationDate] = useState(date)
@@ -22,19 +23,27 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
   const {search} = useLocation()
   const newDate = queryString.parse(search).date
 
-  useEffect(loadDashboard, [reservationDate]);
-  useEffect(loadDefault, [search])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(loadDashboard, [search, reservationDate]);  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(loadDefault, [search])  
   useEffect(loadTables, [])
  
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
-    listReservations({ date: reservationDate }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
+    if(newDate) {
+      listReservations({ date: newDate }, abortController.signal)
+        .then(setReservations)
+        .catch(setReservationsError);
+    }
+    else {      
+      listReservations({ date: reservationDate }, abortController.signal)
+        .then(setReservations)
+        .catch(setReservationsError);
+    }
     return () => abortController.abort();
   }
-  
+
   function loadDefault() {
     if(search) return
     const abortController = new AbortController();
@@ -42,14 +51,14 @@ function Dashboard({ date }) {//PROP IS TODAY, SO BY DEFAUL ITS TODAY
     return () => abortController.abort();
   }
 
-function loadTables() {
-  const abortController = new AbortController()
-  setReservationsError(null)
-  listTables()
-      .then((tables) => setTables(tables.data))
-      .catch(setReservationsError)
-  return () => abortController.abort()
-}
+  function loadTables() {
+    const abortController = new AbortController()
+    setReservationsError(null)
+    listTables()
+        .then((tables) => setTables(tables.data))
+        .catch(setReservationsError)
+    return () => abortController.abort()
+  }
 
   const handlePrev = () => {
      newDate ? setReservationDate(previous(newDate)) : setReservationDate(previous(date))
@@ -68,6 +77,7 @@ function loadTables() {
       <Reservations 
         reservation={reservation}
         loadDashboard={loadDashboard}
+        newDate={newDate}
       /> 
       )
   })
@@ -82,6 +92,11 @@ function loadTables() {
       />
     )
   })
+
+  if(newDate !== reservationDate && search !== "") {
+    setReservationDate(newDate)
+    loadDashboard()
+  }
 
   return (
     <main>

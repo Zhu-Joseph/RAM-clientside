@@ -56,8 +56,8 @@ describe("US-08 - Change an existing reservation - E2E", () => {
           path: ".screenshots/us-08-dashboard-edit-click-before.png",
           fullPage: true,
         });
-
-        const hrefSelector = `[href="/reservations/${reservation.reservation_id}/edit"]`;
+        
+        const hrefSelector = `[href="/reservations/${reservation.id}/edit"]`;
         await page.waitForSelector(hrefSelector);
 
         await page.screenshot({
@@ -76,13 +76,13 @@ describe("US-08 - Change an existing reservation - E2E", () => {
           fullPage: true,
         });
 
-        const cancelButtonSelector = `[data-reservation-id-cancel="${reservation.reservation_id}"]`;
+        const cancelButtonSelector = `[data-reservation-id-cancel="${reservation.id}"]`;
 
         const cancelButton = await page.$(cancelButtonSelector);
 
         if (!cancelButton) {
           throw new Error(
-            `Cancel button for reservation_id ${reservation.reservation_id} was not found.`
+            `Cancel button for reservation_id ${reservation.id} was not found.`
           );
         }
 
@@ -109,7 +109,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
           fullPage: true,
         });
 
-        const cancelButtonSelector = `[data-reservation-id-cancel="${reservation.reservation_id}"]`;
+        const cancelButtonSelector = `[data-reservation-id-cancel="${reservation.id}"]`;
 
         const cancelButton = await page.$(cancelButtonSelector);
 
@@ -139,7 +139,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
         waitUntil: "networkidle0",
       });
       await page.goto(
-        `${baseURL}/reservations/${reservation.reservation_id}/edit`,
+        `${baseURL}/reservations/${reservation.id}/edit`,
         {
           waitUntil: "networkidle0",
         }

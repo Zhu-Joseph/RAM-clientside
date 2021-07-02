@@ -51,14 +51,41 @@ async function create(req, res, next) {
     res.status(201).json({data})
 }
 
+//TEST REQUIRE US TO MAKE ONE METHOD FOR BOTH STATUS UPDATE AND TABLE UPDATE
+//PAUSING AND USING SEAT FOR NOW
+
 async function update(req, res, next) {
     const tableId = req.params.table_id
     const reservationId = req.body.data.id
+    const newStatus = req.body.data.status
 
     const updatedTable = await service.update(tableId, reservationId)
+    // const updateResv = await service.updateStatus(reservationId, newStatus)
 
     res.json({data: updatedTable})
 }
+
+async function updateResvStatus(req, res, next) {
+    const reservationId = req.body.data.id
+    const newStatus = req.body.data.status
+
+    const updateResv = await service.updateStatus(reservationId, newStatus)
+
+    next()
+}
+
+
+
+//**************
+async function seat(req, res, next) {
+    const tableId = req.params.table_id
+    const reservationId = req.body.data.id
+
+    const data = await service.seat(tableId, reservationId)
+    res.json({data})
+}
+
+
 
 async function destroy(req, res, next) {
     const tableId = req.params.table_id
@@ -74,12 +101,9 @@ async function destroy(req, res, next) {
     
     res.sendStatus(204)
 }
-
-
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [validateTable, asyncErrorBoundary(create)],
-    update: [tableExist, validSizeandTable ,asyncErrorBoundary(update)],
+    update: [tableExist, validSizeandTable, updateResvStatus, asyncErrorBoundary(update)],
     delete: [tableExist, asyncErrorBoundary(destroy)]
-    
 }

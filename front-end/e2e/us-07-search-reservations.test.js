@@ -43,7 +43,7 @@ describe("US-07 - Search reservations - E2E", () => {
       await Promise.all([
         page.click("button[type=submit]"),
         page.waitForResponse((response) =>
-          response.url().includes("mobile_number=")
+          response.url().includes("mobile_phone=")//TEST IS BREAKING HERE, NOT FIND THE MOBILE_NUMBER IN THE URL
         ),
       ]);
 
@@ -66,7 +66,7 @@ describe("US-07 - Search reservations - E2E", () => {
       await Promise.all([
         page.click("button[type=submit]"),
         page.waitForResponse((response) =>
-          response.url().includes("mobile_number=")
+          response.url().includes("mobile_phone=")
         ),
       ]);
 

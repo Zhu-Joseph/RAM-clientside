@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import {useHistory} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
 import {validateReservation} from "../utils/handlers"
@@ -35,12 +35,13 @@ export default function NewReservations() {
         else {
             createReservations({data: formData}, abortController.signal)
             .then(() => {
-                history.push("/dashboard")
+                history.push({
+                    pathname: "/dashboard",
+                    search:`?date=${formData.reservation_date}`
+                })
             })
             .catch(setError)
-            
         }
-
         return () => abortController.abort()
     }
 

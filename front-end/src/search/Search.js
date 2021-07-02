@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
+import { Link, useLocation } from "react-router-dom";
 import Reservations from "../reservations/Reservations";
 import { listReservations } from "../utils/api";
-import {validateSearch} from "../utils/handlers"
 import ErrorAlert from "../layout/ErrorAlert";
+import queryString from "query-string"
 
 export default function Search() {
     const initialState = {
@@ -11,28 +12,19 @@ export default function Search() {
     const [formData, setFormData] = useState({ ...initialState });
     const [reservations, setReservations] = useState([]);
     const [reservationsError, setReservationsError] = useState(null);
-    const [phone, setPhone] = useState("")
+    const {search} = useLocation()
+    const searchPhone = queryString.parse(search).mobile_phone
 
-    useEffect(loadDashboard, [phone]);
-
+    useEffect(loadDashboard, [searchPhone]);
+    
     function loadDashboard() {
       const abortController = new AbortController();
       setReservationsError(null);
-      listReservations({ mobile_phone: phone.mobile_number }, abortController.signal)
+      listReservations({ mobile_phone: searchPhone }, abortController.signal)
         .then(setReservations)
         .catch(setReservationsError);
 
       return () => abortController.abort();
-    }
-
-    function handleSubmit(event) {
-        event.preventDefault()
-        const abortController = new AbortController() 
-        const result = validateSearch(formData)
-        
-        if(result) setPhone(formData)
-
-        return () => abortController.abort()
     }
 
     const handlePhone = ({ target }) => {
@@ -55,29 +47,33 @@ export default function Search() {
                     });                
             }
         }
-      }
+    }
 
-      const list = reservations.map((reservation) => {
-        return (
-          <Reservations
-            reservation={reservation}
-            loadDashboard={loadDashboard}
-          />
-          )
-      })
+    const list = reservations.map((reservation) => {
+      return (
+        <Reservations
+          reservation={reservation}
+          loadDashboard={loadDashboard}
+        />
+        )
+    })
 
+    if(reservationsError) {
+      <ErrorAlert error={reservationsError} />
+    }
 
-      
     if(reservations.length === 0) {
       return (
         <div>
-          <form onSubmit={handleSubmit} className="row mb-3">
+          <form className="row mb-3">
                 <label className="col-sm-1 col-form-label">Search </label>
                 <div>
                   <input className="col form-control" name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
                   onChange={handlePhone} value={formData.mobile_number}/>
                 </div>
-                <button onSubmit={handleSubmit} className="btn btn-secondary">Find</button>
+                <button type="submit" className="btn btn-outline-secondary">
+                  <Link to={`/search?mobile_phone=${formData.mobile_number}`}>Find</Link>
+                </button>
             </form>
             <h4 className="mb-0">No reservations found</h4>
         </div>
@@ -86,13 +82,15 @@ export default function Search() {
 
     return (
         <div>
-            <form onSubmit={handleSubmit} className="row mb-3">
+            <form className="row mb-3">
                 <label className="col-sm-1 col-form-label">Search </label>
                 <div>
                   <input className="col form-control" name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
                   onChange={handlePhone} value={formData.mobile_number}/>
                 </div>
-                <button onSubmit={handleSubmit} className="btn btn-secondary">Find</button>
+                <button type="submit" className="btn btn-outline-secondary">
+                  <Link to={`/search?mobile_phone=${formData.mobile_number}`}>Find</Link>
+                </button>
             </form>
             <ol>{list}</ol>
         </div>

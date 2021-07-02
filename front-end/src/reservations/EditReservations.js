@@ -14,7 +14,8 @@ export default function EditReservations () {
     const [formData, setFormData] = useState([]);
     const {reservation_id} = useParams()
     const history = useHistory()
-
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(loadReservation, [])
 
     function loadReservation() {
@@ -24,7 +25,7 @@ export default function EditReservations () {
             .catch(setError)
         return () => abortController.abort();
     }
-    
+
     function submitHandler(event) {
         event.preventDefault()
         const abortController = new AbortController() 
@@ -40,7 +41,10 @@ export default function EditReservations () {
         else {
             updateReservation(reservation_id, {data: formData}, abortController.signal)
             .then(() => {
-                history.goBack()
+                history.push({
+                    pathname: "/dashboard",
+                    search:`?date=${formData.reservation_date}`
+                })
             })
             .catch(setError)
         }
@@ -130,10 +134,10 @@ export default function EditReservations () {
                     <input name="people" type="number" 
                     value={formData.people} onChange={handleChange}/>
                 </div>
-                <div>
-                    <label>Status:</label>
-                    <select className="form-select form-select-lg mb-3" name="status" value={formData.status} onChange={handleChange}>
-                        <option className="col-sm-2 col-form-label" value="booked">Booked</option>
+                <div className="row mb-3 form-select mb-3">
+                    <label className="col-sm-2 col-form-label">Status:</label>
+                    <select className="col-sm-2 col-form-label" name="status" value={formData.status} onChange={handleChange}>
+                        <option value="booked">Booked</option>
                         <option value="seated">Seated</option>
                         <option value="finished">Finished</option>
                         <option value="cancelled">Cancelled</option>

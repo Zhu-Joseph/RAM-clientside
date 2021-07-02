@@ -11,15 +11,25 @@ export default function NewTables() {
         "occupied":false,
     }
 
+    const initialError = {
+        "message": []
+    }
     const history = useHistory()
     const [formData, setFormData] = useState({...initialState})
-    const [error, setError] = useState(undefined)
+    const [error, setError] = useState({...initialError})
 
     function submitHandler(event) {
         event.preventDefault()
         const abortController = new AbortController()
-        const result = validateTable(formData)
+        const result = validateTable(formData, error)
  
+        if(!result) setError({message: error.message})
+        
+
+        if(error.message.length > 0) {
+            console.log(`Error ${error.message}`)
+        }
+
         if(result) {
             createTable({data: formData}, abortController.signal)
             .then(() => {
@@ -61,7 +71,7 @@ export default function NewTables() {
         setFormData(initialState)
     }
 
-    if(error) {
+    if(error.message.length > 0) {
         return (
             <ErrorAlert error={error} />
         )
@@ -84,7 +94,7 @@ export default function NewTables() {
                         onChange={handleCapacity} value={formData.capacity} />
                     </div>                  
                 </div>
-                <button type="button" className="btn btn-outline-success" type="submit" onSubmit={submitHandler}>Submit</button>
+                <button className="btn btn-outline-success" type="submit" onSubmit={submitHandler}>Submit</button>
             </form>
             <div>
                 <button type="button" className="btn btn-outline-danger" onClick={cancelHandler}>Cancel</button>
