@@ -3,55 +3,58 @@
  */
 const service = require("./reservations.service")
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary")
-const hardData = require("../db/seeds/00-reservations.json")
 
-function validateReservation(req, res, next) {
-  const data = req.body.data
-  if (data.first_name === "" ||
-  data.last_name  === ""||
-  data.mobile_number === "" || 
-  data.reservation_date === "" ||
-  data.reservation_time === "" ||
-  data.people < 1) {
-    return next({ status: 400, 
-      message: "Cannot complete a reservation unless all fields are complete"
-    })
+function isValidDate(req, res, next){
+  const { data = {} } = req.body;
+  const reservation_date = new Date(data['reservation_date']);
+  const day = reservation_date.getDate();
+  console.log(day)
+  console.log(reservation_date)
+  if (isNaN(Date.parse(data['reservation_date']))){
+      return next({ status: 400, message: `Invalid reservation_date` });
   }
-  next()
+  if (day === 2) {
+      return next({ status: 400, message: `Restaurant is closed on Tuesdays` });
+  }
+  if (reservation_date < new Date()) {
+      return next({ status: 400, message: `Reservation must be set in the future` });
+  }
+  next();
 }
 
-function dayofweek(y, m, d)//TO CHECK FOR TUESDAY = 2, [0-6] = SUN-SAT
-{// HELPER FUNCTION FOR VALIDATE RESERVATION
-    let t = [ 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 ];
-    y -= (m < 3) ? 1 : 0;
-    return ( y + y/4 - y/100 + y/400 + t[m-1] + d) % 7;
+function bodyDataHas(propertyName) {
+  return function (req, res, next) {
+    const { data = {} } = req.body;
+    if (data[propertyName]) {
+      return next();
+    }
+    next({ status: 400, message: `Must include a ${propertyName}` });
+  };
 }
 
-function closedTuesdays(req, res, next) {
-  const data = req.body.data.reservation_date
-  const date = data.split("-")
-  const checkTuesday = Math.round(dayofweek(
-      Number(date[0]), Number(date[1]), Number(date[2])
-      ))
-  
-  if(checkTuesday === 2) {
-    return next ({status: 400,
-    message: "Sorry, the resturant is closed on Tuesdays"
-    })
+const has_first_name = bodyDataHas("first_name");
+const has_last_name = bodyDataHas("last_name");
+const has_mobile_number = bodyDataHas("mobile_number");
+const has_reservation_date = bodyDataHas("reservation_date");
+const has_reservation_time = bodyDataHas("reservation_time");
+const has_people = bodyDataHas("people");
+
+function isTime(req, res, next){
+  const { data = {} } = req.body;
+  if (/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(data['reservation_time']) || /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(data['reservation_time']) ){
+    return next();
   }
-  next()
+  next({ status: 400, message: `Invalid reservation_time` });
 }
 
-function notOperatingHours(req, res, next) {
-  const data = req.body.data.reservation_time
- 
-  if(data < "10:30" ) {
-    return next({status: 400, message: "Please make a reservation during our operating hours"})
-  } 
-  else if(data > "21:30" ) {
-    return next({status: 400, message: "Sorry, we are unable to make reservations one hour before closing time"})
+function isValidNumber(req, res, next){
+  const { data = {} } = req.body;
+  const people = Number(data["people"])
+
+  if (people === 0 || !Number.isInteger(people)){
+      return next({ status: 400, message: `Invalid number of people` });
   }
-  next()
+  next();
 }
 
 async function reservationExist(req, res, next) {
@@ -83,48 +86,6 @@ async function bookedOnly(req, res, next) {
   next()
 }
 
-//VALIDATION FOR DATE AND TIME
-// const dateFormat = /\d\d\d\d-\d\d-\d\d/;
-const timeFormat = /\d\d:\d\d/;
-
-function asDateString(date) {
-  return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
-    .toString(10)
-    .padStart(2, "0")}-${date.getDate().toString(10).padStart(2, "0")}`;
-}
-
-// function formatAsDate(dateString) {
-//   return dateString.match(dateFormat)[0];
-// }
-
-function formatAsTime(timeString) {
-  return timeString.match(timeFormat)[0];
-}
-
-function today() {
-  return asDateString(new Date());
-}
-
-function rightNow() {
-  const now = new Date()
-  const currentTime = `${('00' + now.getHours()).slice(-2)}:${('00' + now.getMinutes()).slice(-2)}:${now.getSeconds()}`
-  return formatAsTime(currentTime)
-}
-
-function pastReservation(req, res, next) {//ACTUAL FUNCTION TO TEST RESERVATIONS
-  const date = req.body.data.reservation_date
-  const time = req.body.data.reservation_time
-
-  if(date < today()) {
-    return next({status: 400, message: "Cannot make reservations for a previous time or date"})
-  }
-  else if(date === today() && time < rightNow()) {
-    return next({status: 400, message: "Cannot make reservations for a previous time or date"})
-  }
-  else {
-    next()
-  }
-}
 
 //VALIDATION AND HELPER FUNCTIONS ABOVE, CRUD FUNCTIONS BELOW
 async function list(req, res) {
@@ -180,7 +141,18 @@ async function updateReservation(req, res, next) {
 module.exports = {
   list: asyncErrorBoundary(list),
   findId,
-  create: [validateReservation, closedTuesdays, notOperatingHours, pastReservation, create],
+  create: [
+    has_first_name,
+    has_last_name,
+    has_mobile_number,
+    has_reservation_date,
+    has_reservation_time,
+    has_people,
+    isValidDate,
+    isValidNumber,
+    isTime,
+    create
+  ],
   updateStatus: [reservationExist, validStatus, asyncErrorBoundary(updateStatus)],
   updateReservation: [reservationExist, bookedOnly, validStatus, asyncErrorBoundary(updateReservation)] 
 };

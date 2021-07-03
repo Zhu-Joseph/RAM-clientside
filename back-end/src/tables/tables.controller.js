@@ -104,6 +104,6 @@ async function destroy(req, res, next) {
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [validateTable, asyncErrorBoundary(create)],
-    update: [tableExist, validSizeandTable, updateResvStatus, asyncErrorBoundary(update)],
+    update: [tableExist, validSizeandTable, asyncErrorBoundary(seat)],
     delete: [tableExist, asyncErrorBoundary(destroy)]
 }
