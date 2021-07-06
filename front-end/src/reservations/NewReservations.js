@@ -56,9 +56,17 @@ export default function NewReservations() {
           ...formData,
           [target.name]: value,
         });
-      }
+    }
 
-      const handlePhone = ({ target }) => {
+    const handleNumberChange = ({ target }) => {
+        const value = target.value;
+        setFormData({
+          ...formData,
+          [target.name]: Number(value),
+        });
+    }
+
+    const handlePhone = ({ target }) => {
         let value = target.value;
         if (value.length <= 12 && !isNaN(Number(value[value.length - 1]))) {
             if (value.length === 3 || value.length === 7) {
@@ -127,7 +135,7 @@ export default function NewReservations() {
                 <div className="row mb-3">
                     <label className="col-sm-2 col-form-label">Party Size:</label>
                     <input name="people" type="number" 
-                    value={formData.people} onChange={handleChange}/>
+                    value={formData.people} onChange={handleNumberChange}/>
                 </div>
                 <button type="submit" className="btn btn-outline-success" onSubmit={submitHandler}>Submit</button>                                         
             </form>

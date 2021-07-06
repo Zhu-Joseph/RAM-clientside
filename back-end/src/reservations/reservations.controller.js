@@ -4,24 +4,50 @@
 const service = require("./reservations.service")
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary")
 
+const timeFormat = /\d\d:\d\d/;
+
+function asDateString(date) {
+  return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
+    .toString(10)
+    .padStart(2, "0")}-${date.getDate().toString(10).padStart(2, "0")}`;
+}
+
+function formatAsTime(timeString) {
+  return timeString.match(timeFormat)[0];
+}
+
+function rightNow() {
+  const now = new Date()
+  const currentTime = `${('00' + now.getHours()).slice(-2)}:${('00' + now.getMinutes()).slice(-2)}:${now.getSeconds()}`
+  return formatAsTime(currentTime)
+}
+
+function today() {
+  return asDateString(new Date());
+}
+
 function isValidDate(req, res, next){
   const { data = {} } = req.body;
+  const date = data['reservation_date']
   const reservation_date = new Date(data['reservation_date']);
   const day = reservation_date.getDate();
-  console.log(day)
-  console.log(reservation_date)
+
   if (isNaN(Date.parse(data['reservation_date']))){
       return next({ status: 400, message: `Invalid reservation_date` });
   }
   if (day === 2) {
       return next({ status: 400, message: `Restaurant is closed on Tuesdays` });
   }
-  if (reservation_date < new Date()) {
-      return next({ status: 400, message: `Reservation must be set in the future` });
+  if(date < today()) {
+    return next({status: 400, message: "Cannot make reservations for a previous time or date"})
+  }
+  if(date === today() && time < rightNow()) {
+    return next({status: 400, message: "Cannot make reservations for a previous time or date"})
   }
   next();
 }
 
+//TIME AND DATE VALIDATION FUNCTION ABOVE
 function bodyDataHas(propertyName) {
   return function (req, res, next) {
     const { data = {} } = req.body;
@@ -49,7 +75,7 @@ function isTime(req, res, next){
 
 function isValidNumber(req, res, next){
   const { data = {} } = req.body;
-  const people = Number(data["people"])
+  const people = data["people"]
 
   if (people === 0 || !Number.isInteger(people)){
       return next({ status: 400, message: `Invalid number of people` });
