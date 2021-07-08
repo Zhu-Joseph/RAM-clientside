@@ -4,7 +4,7 @@ import {deleteTable, updateStatus} from "../utils/api";
 export default function Tables (props) {
     const {table} = props
     const table_id = "id"//TO MAKE SURE TEST PASSES AND RUNS
-
+ 
     function finishHandler() {
       const abortController = new AbortController();
       const result = window.confirm("Is this table ready to seat new guests? This cannot be undone.")

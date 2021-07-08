@@ -50,7 +50,7 @@ describe("US-08 - Change an existing reservation", () => {
       };
 
       const reservation = await knex("reservations")
-        .where("reservation_id", 1)
+        .where("id", 1)
         .first();
 
       expect(reservation).not.toBeUndefined();
@@ -363,7 +363,7 @@ describe("US-08 - Change an existing reservation", () => {
       const status = "cancelled";
 
       const response = await request(app)
-        .put(`/reservations/${reservation.reservation_id}/status`)
+        .put(`/reservations/${reservation.id}/status`)
         .set("Accept", "application/json")
         .send({ data: { status } });
 

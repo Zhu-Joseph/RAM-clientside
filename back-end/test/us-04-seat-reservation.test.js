@@ -172,7 +172,7 @@ describe("US-04 - Seat reservation", () => {
           .set("Accept", "application/json");
 
         expect(response.body.error).toBeUndefined();
-        expect(response.body.data.reservation_id).toBe(1);
+        expect(response.body.data.id).toBe(1);
         expect(response.status).toBe(200);
       });
     });
@@ -192,7 +192,7 @@ describe("US-04 - Seat reservation", () => {
         expect(tableOne).not.toBeUndefined();
 
         const response = await request(app)
-          .put(`/tables/${tableOne.table_id}/seat`)
+          .put(`/tables/${tableOne.id}/seat`)
           .set("Accept", "application/json")
           .send({ datum: {} });
 
@@ -205,11 +205,11 @@ describe("US-04 - Seat reservation", () => {
         const data = {};
 
         const response = await request(app)
-          .put(`/tables/${tableOne.table_id}/seat`)
+          .put(`/tables/${tableOne.id}/seat`)
           .set("Accept", "application/json")
           .send({ data });
 
-        expect(response.body.error).toContain("reservation_id");
+        expect(response.body.error).toContain("id");
         expect(response.status).toBe(400);
       });
 
@@ -217,11 +217,11 @@ describe("US-04 - Seat reservation", () => {
         expect(tableOne).not.toBeUndefined();
 
         const data = {
-          reservation_id: 999,
+          id: 999,
         };
 
         const response = await request(app)
-          .put(`/tables/${tableOne.table_id}/seat`)
+          .put(`/tables/${tableOne.id}/seat`)
           .set("Accept", "application/json")
           .send({ data });
 
@@ -233,9 +233,9 @@ describe("US-04 - Seat reservation", () => {
         expect(tableOne).not.toBeUndefined();
 
         const response = await request(app)
-          .put(`/tables/${tableOne.table_id}/seat`)
+          .put(`/tables/${tableOne.id}/seat`)
           .set("Accept", "application/json")
-          .send({ data: { reservation_id: 1 } });
+          .send({ data: { id: 1 } });
 
         expect(response.body.error).toBeUndefined();
         expect(response.status).toBe(200);
@@ -244,9 +244,9 @@ describe("US-04 - Seat reservation", () => {
         expect(barTableOne).not.toBeUndefined();
 
         const response = await request(app)
-          .put(`/tables/${barTableOne.table_id}/seat`)
+          .put(`/tables/${barTableOne.id}/seat`)
           .set("Accept", "application/json")
-          .send({ data: { reservation_id: 1 } });
+          .send({ data: { id: 1 } });
 
         expect(response.body.error).toContain("capacity");
         expect(response.status).toBe(400);
@@ -257,18 +257,18 @@ describe("US-04 - Seat reservation", () => {
 
         // first, occupy the table
         const occupyResponse = await request(app)
-          .put(`/tables/${tableOne.table_id}/seat`)
+          .put(`/tables/${tableOne.id}/seat`)
           .set("Accept", "application/json")
-          .send({ data: { reservation_id: 1 } });
+          .send({ data: { id: 1 } });
 
         expect(occupyResponse.body.error).toBeUndefined();
         expect(occupyResponse.status).toBe(200);
 
         // next, try to assign the table to another reservation
         const doubleAssignResponse = await request(app)
-          .put(`/tables/${tableOne.table_id}/seat`)
+          .put(`/tables/${tableOne.id}/seat`)
           .set("Accept", "application/json")
-          .send({ data: { reservation_id: 2 } });
+          .send({ data: { id: 2 } });
 
         expect(doubleAssignResponse.body.error).toContain("occupied");
         expect(doubleAssignResponse.status).toBe(400);

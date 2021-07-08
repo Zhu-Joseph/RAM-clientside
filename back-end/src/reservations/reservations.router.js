@@ -7,8 +7,7 @@
 const router = require("express").Router();
 const controller = require("./reservations.controller");
 
-router.route("/:reservation_id/edit")
-    .put(controller.updateReservation)
+router.route("/:reservation_id/edit")//MAY NOT NEED
     .get(controller.findId)
 
 router.route("/:reservation_id/status")
@@ -16,6 +15,10 @@ router.route("/:reservation_id/status")
 
 router.route("/:reservation_id/seat")
     .get(controller.findId)
+
+router.route("/:reservation_id")
+    .put(controller.updateReservation)
+    .get(controller.read)
 
 router.route("/")
     .post(controller.create)

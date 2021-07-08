@@ -68,7 +68,7 @@ async function createReservation(reservation, signal) {
  *  a promise that resolves to the newly created table.
  */
 async function createTable(table, signal) {
-  const url = `${API_BASE_URL}/tables/new`;
+  const url = `${API_BASE_URL}/tables`;
 
   const options = {
     method: "POST",

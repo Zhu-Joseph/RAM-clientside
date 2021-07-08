@@ -54,7 +54,7 @@ export default function NewTables() {
 
             setFormData({
             ...formData,
-            [target.name]: value,
+            [target.name]: Number(value),
             })
         } else {
             if(value.length === 0) {

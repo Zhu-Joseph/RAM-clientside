@@ -46,7 +46,6 @@ function updateStatus(reservationId, newStatus) {//MAY NOT WORK
     .update({"status": newStatus})
 }
 
-
 //FROM MENTOR TEDDY
 function seat(table_id, reservation_id) {
     return knex.transaction(async (transaction) => {

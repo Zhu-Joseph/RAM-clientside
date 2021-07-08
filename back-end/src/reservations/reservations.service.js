@@ -23,7 +23,7 @@ function create(reservations) {
 function find(phone) {
     return knex("reservations")
     .select("*")
-    .where({"mobile_number": phone})
+    .where("mobile_number", "like", `%${phone}%`)
 }
 
 function findResvSize(id) {
@@ -37,6 +37,12 @@ function findId(id) {
     .select("*")
     .where({"id":id})
     .first()
+}
+
+function readTable(tableId){//FOR TABLES
+    return knex("tables")
+      .where({"id": tableId})
+      .first();
 }
 
 function updateStatus(reservationId, newStatus) {
@@ -61,7 +67,8 @@ module.exports = {
     findResvSize,
     findId,
     updateStatus,
-    updateReservation
+    updateReservation,
+    readTable
 }
 
 

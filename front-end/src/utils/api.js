@@ -90,7 +90,7 @@ export async function createReservations(reservation, signal) {
 
 // TO CREATE A NEW RESERVATION
 export async function createTable(table, signal) {
-  const url = `${API_BASE_URL}/tables/new`
+  const url = `${API_BASE_URL}/tables`
   const options = {
     method: "POST",
     headers,
@@ -138,7 +138,7 @@ export async function updateStatus(reservationId, newStatus, signal) {
 
 //TO FULLY UPDATE RESERVATION
 export async function updateReservation(reservationId, updateInfo, signal) {
-  const url = `${API_BASE_URL}/reservations/${reservationId}/edit`
+  const url = `${API_BASE_URL}/reservations/${reservationId}`
   const options = {
     method: "PUT",
     headers,

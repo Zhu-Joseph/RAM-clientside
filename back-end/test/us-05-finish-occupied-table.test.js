@@ -52,15 +52,15 @@ describe("US-05 - Finish an occupied table", () => {
       expect(tableOne).not.toBeUndefined();
 
       const seatResponse = await request(app)
-        .put(`/tables/${tableOne.table_id}/seat`)
+        .put(`/tables/${tableOne.id}/seat`)
         .set("Accept", "application/json")
-        .send({ data: { reservation_id: 1 } });
+        .send({ data: { id: 1 } });
 
       expect(seatResponse.body.error).toBeUndefined();
       expect(seatResponse.status).toBe(200);
 
       const finishResponse = await request(app)
-        .delete(`/tables/${tableOne.table_id}/seat`)
+        .delete(`/tables/${tableOne.id}/seat`)
         .set("Accept", "application/json");
 
       expect(finishResponse.body.error).toBeUndefined();

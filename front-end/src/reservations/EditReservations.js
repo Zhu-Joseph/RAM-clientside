@@ -63,6 +63,14 @@ export default function EditReservations () {
         });
       }
 
+    const handleNumberChange = ({ target }) => {
+        const value = target.value;
+        setFormData({
+          ...formData,
+          [target.name]: Number(value),
+        });
+    }
+      
     const handlePhone = ({ target }) => {
         let value = target.value;
         if (value.length <= 12 && !isNaN(Number(value[value.length - 1]))) {
@@ -132,7 +140,7 @@ export default function EditReservations () {
                 <div className="row mb-3">
                     <label className="col-sm-2 col-form-label">Party Size:</label>
                     <input name="people" type="number" 
-                    value={formData.people} onChange={handleChange}/>
+                    value={formData.people} onChange={handleNumberChange}/>
                 </div>
                 <div className="row mb-3 form-select mb-3">
                     <label className="col-sm-2 col-form-label">Status:</label>

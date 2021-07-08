@@ -19,10 +19,10 @@ describe("US-07 - Search reservation by phone number", () => {
     return await knex.migrate.rollback(null, true).then(() => knex.destroy());
   });
 
-  describe("GET /reservations?mobile_number=...", () => {
+  describe("GET /reservations?mobile_phone=...", () => {
     test("returns reservations for a partial existing phone number", async () => {
       const response = await request(app)
-        .get("/reservations?mobile_number=808")
+        .get("/reservations?mobile_phone=808")
         .set("Accept", "application/json");
 
       expect(response.body.error).toBeUndefined();
@@ -31,7 +31,7 @@ describe("US-07 - Search reservation by phone number", () => {
 
     test("returns empty list for non-existent phone number", async () => {
       const response = await request(app)
-        .get("/reservations?mobile_number=518-555-0169")
+        .get("/reservations?mobile_phone=518-555-0169")
         .set("Accept", "application/json");
 
       expect(response.body.error).toBeUndefined();
