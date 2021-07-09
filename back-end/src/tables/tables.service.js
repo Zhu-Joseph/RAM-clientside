@@ -63,7 +63,7 @@ function seat(table_id, reservation_id) {
         .transacting(transaction)
         .then((records) => records[0]);
     });
-  }
+}
 
 module.exports = {
     list,

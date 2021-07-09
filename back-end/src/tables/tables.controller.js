@@ -63,15 +63,16 @@ function isAvailable(req, res, next) {
     if (res.locals.table.reservation_id) {
       next({
         status: 400,
-        message: `Table id is occupied: ${res.locals.table.table_id}`,
+        message: `Table id is occupied: ${res.locals.table.id}`,
       });
     } else {
       next();
     }
   }
   
-  function isBooked(req, res, next) {
-
+  function isSeated(req, res, next) {
+    const status = Object.keys(res.locals) 
+    // console.log(status.people)
     if (req.body.data.status === "booked") {
       next();
     } else {
@@ -120,7 +121,7 @@ async function update(req, res, next) {
     const updatedTable = await service.update(tableId, reservationId)
     // const updateResv = await service.updateStatus(reservationId, newStatus)
 
-    res.json({data: updatedTable})
+    res.json({data: newStatus})
 }
 
 async function updateResvStatus(req, res, next) {
@@ -162,10 +163,12 @@ module.exports = {
     list: asyncErrorBoundary(list),
     create: [has_table_name, has_capacity, isValidTableName, isValidNumber, asyncErrorBoundary(create)],
     update: [
+        // isSeated,
         tableExist, 
         isAvailable, 
         hasData,
-        asyncErrorBoundary(seat)
+        // asyncErrorBoundary(updateResvStatus),
+        asyncErrorBoundary(update)
     ],
     delete: [tableExist, asyncErrorBoundary(destroy)]
 }

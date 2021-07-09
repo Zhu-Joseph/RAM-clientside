@@ -128,7 +128,7 @@ async function reservationExist(req, res, next) {
 
 function validStatus(req, res, next) {
   const newStatus = req.body.data.status
-  // console.log(res.locals.reservation)
+
   if(newStatus !== "booked" && newStatus !== "seated" && newStatus !== "finished" && newStatus !== "cancelled") {
     next({status: 400, message: `${newStatus} is an invalid reservation status`})
   }
@@ -157,11 +157,21 @@ async function bookedOnly(req, res, next) {
 
 async function findResv(req, res, next) {
   const id = req.body.data.id
-
   const foundReservation = await service.findId(id)
 
   if(!foundReservation) {
     next({status: 404, message: `Sorry we could not locate your ${id}`})
+  }
+
+  next()
+}
+
+async function notYetSeated(req, res, next) {
+  const id = req.body.data.id
+  const foundReservation = await service.findId(id)
+
+  if(foundReservation.status === "seated") {
+    next({status: 404, message: `Sorry the current reservation is already ${foundReservation.status}`})
   }
 
   next()
@@ -271,7 +281,8 @@ module.exports = {
     asyncErrorBoundary(create)
   ],
   validResv: [
-    has_id, 
+    // has_id,
+    notYetSeated, 
     findResv, 
     validSizeandTable
   ],
