@@ -122,7 +122,7 @@ async function reservationExist(req, res, next) {
   if(!foundReservation) {
     next({status: 404, message: `Sorry we could not locate your reservation ${id}` })
   }
-  res.locals.reservation = foundReservation//THIS LINE WAS ADDED FROM MY ORIGINAL CODE
+  res.locals.reservation = foundReservation
   next()
 }
 
@@ -146,8 +146,7 @@ function notFinished(req, res, next) {
 
 
 async function bookedOnly(req, res, next) {
-  const id = req.params.reservation_id
-  const foundReservation = await service.findId(id)
+  const foundReservation = res.locals.reservation
 
   if(foundReservation.status !== "booked") {
     next({status: 400, message: "Sorry we can only edit reservations that are currently booked and not yet seated"})
@@ -158,6 +157,7 @@ async function bookedOnly(req, res, next) {
 async function findResv(req, res, next) {
   const id = req.body.data.id
   const foundReservation = await service.findId(id)
+  res.locals.reservation = foundReservation
 
   if(!foundReservation) {
     next({status: 404, message: `Sorry we could not locate your ${id}`})
@@ -167,26 +167,22 @@ async function findResv(req, res, next) {
 }
 
 async function notYetSeated(req, res, next) {
-  const id = req.body.data.id
-
-  const foundReservation = await service.findId(id)
-  res.locals.reservation = foundReservation
+  const status = res.locals.reservation.status
   
-  if(foundReservation.status === "seated") {
-    next({status: 400, message: `Sorry the current reservation is already ${foundReservation.status}`})
+  if(status === "seated") {
+    next({status: 400, message: `Sorry the current reservation is already ${status}`})
   }
 
   next()
 }
 
 async function validSizeandTable(req, res, next) {
-  const id = req.body.data.id
   const tableId = req.params.table_id
 
-  const foundReservation = await service.findId(id)
-  const foundTable = await service.readTable(tableId)
+  const table = await service.readTable(tableId)
+  const reservation = res.locals.reservation
 
-  if(foundReservation.people > foundTable.capacity) {
+  if(reservation.people > table.capacity) {
     next({status: 400, message: `Party size is greater then table capacity`})
   }
   next()
@@ -240,11 +236,10 @@ async function findId(req, res, next) {
 }
 
 async function updateStatus(req, res, next) {
-  const id = req.params.reservation_id
+  const id = res.locals.reservation.id
   const body = req.body.data
-  const newStatus = req.body.data.status
 
-  const updatedReservation = await service.updateStatus(id, newStatus)
+  const updatedReservation = await service.updateStatus(id, body.status)
   
   res.json({data: body})
 }
@@ -307,7 +302,6 @@ module.exports = {
     isTime,
     reservationExist, 
     bookedOnly, 
-    validStatus, 
     asyncErrorBoundary(updateReservation)
   ]
 };

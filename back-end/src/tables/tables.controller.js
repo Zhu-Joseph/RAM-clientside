@@ -1,15 +1,5 @@
 const service = require("./tables.service")
-const reservationService = require("../reservations/reservations.service")
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary")
-
-function hasData(req, res, next) {
-    if(!req.body.data) {
-        next({status:400, 
-            message: "Sorry, we were unable to update the table"
-        })
-    }
-    next()
-}
 
 function bodyDataHas(propertyName) {
     return function (req, res, next) {
@@ -71,35 +61,6 @@ function isAvailable(req, res, next) {
     }
   }
   
-  function isSeated(req, res, next) {
-    const status = res.locals.reservation.status 
-    // console.log(`\n\n\n\n\n\n *******${res.locals.reservation}`)
-    if (status === "booked") {
-      next();
-    } else {
-      next({
-        status: 400,
-        message: `Reservation is ${status}.`,
-      });
-    }
-  }
-
-async function validSizeandTable(req, res, next) {
-    const people = req.body.data.people
-    const size = res.locals.table.capacity
-
-    if(people > size) {
-        next({status:400, 
-            message: "Cannot make reservation, the party size is larger than the table capacity"
-        })
-    }
-    next()
-}
-
-
-
-
-
 //VALIDATION AND HELPER FUNCTIONS ABOVE, CRUD FUNCTIONS BELOW
 async function list(req, res) {
     const data = await service.list()    
@@ -111,39 +72,10 @@ async function create(req, res, next) {
     res.status(201).json({data})
 }
 
-//TEST REQUIRE US TO MAKE ONE METHOD FOR BOTH STATUS UPDATE AND TABLE UPDATE
-//PAUSING AND USING SEAT FOR NOW
-
-async function update(req, res, next) {
-    const tableId = req.params.table_id
-    const reservationId = req.body.data.id
-    const newStatus = req.body.data.status
-
-    const updatedTable = await service.update(tableId, reservationId)
-    // const updateResv = await service.updateStatus(reservationId, newStatus)
-
-    res.json({data: newStatus})
-}
-
-async function updateResvStatus(req, res, next) {
-    const reservationId = req.body.data.id
-    const newStatus = req.body.data.status
-
-    const updateResv = await service.updateStatus(reservationId, newStatus)
-
-    next()
-}
-
-
-
-//**************
-async function seat(req, res, next) {//res.locals ONLY HAS TABLE NO RESERVATIONS
-    const tableId = req.params.table_id
-    // console.log(`\n\n\n\n\n\n *******${Object.keys(res.locals.reservation.status)}`)
-    const reservationId = req.body.data.id
+async function seat(req, res, next) {
+    const tableId = res.locals.table.id
     const data = await service.seat(tableId, res.locals.reservation.id);
 
-    // const data = await service.seat(tableId, reservationId)
     res.json({data})
 }
 
@@ -164,12 +96,16 @@ async function destroy(req, res, next) {
 
 module.exports = {
     list: asyncErrorBoundary(list),
-    create: [has_table_name, has_capacity, isValidTableName, isValidNumber, asyncErrorBoundary(create)],
+    create: [
+        has_table_name, 
+        has_capacity, 
+        isValidTableName, 
+        isValidNumber, 
+        asyncErrorBoundary(create)
+    ],
     update: [
-        // isSeated,
         tableExist, 
         isAvailable, 
-        hasData,
         asyncErrorBoundary(seat)
     ],
     delete: [tableExist, asyncErrorBoundary(destroy)]

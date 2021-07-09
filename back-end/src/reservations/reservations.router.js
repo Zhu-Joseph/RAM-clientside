@@ -7,7 +7,7 @@
 const router = require("express").Router();
 const controller = require("./reservations.controller");
 
-router.route("/:reservation_id/edit")//MAY NOT NEED
+router.route("/:reservation_id/edit")
     .get(controller.findId)
 
 router.route("/:reservation_id/status")

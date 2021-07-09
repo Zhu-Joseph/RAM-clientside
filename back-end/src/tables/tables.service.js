@@ -13,15 +13,6 @@ function findTable (tableId) {
     .first()
 }
 
-function update(tableId, reservationId) {
-    return knex("tables")
-    .where({"id": tableId})
-    .update({
-        "occupied": true,
-        "reservation_id": reservationId 
-    })
-}
-
 function create(table) {
     return knex("tables")
     .insert(table, "*")
@@ -29,7 +20,6 @@ function create(table) {
 }
 
 //TEST REQUIRE THAT WE USE A DELETE METHOD, BUT IT ACTUALLY ACTS MORE LIKE AN UPDATE
-
 function destroy(tableId, reservationId) {
     return knex.transaction(async (transaction) => {
         await knex("reservations")
@@ -46,15 +36,6 @@ function destroy(tableId, reservationId) {
     })
 }
 
-//TEST REQUIRE THAT I MAKE ONE METHOD TO BOTH UPDATE THE TABLE AND RESERVATION TABLES
-function updateStatus(reservationId, newStatus) {//MAY NOT WORK
-    return knex("reservations")
-    .select("*")
-    .where({"id": reservationId})
-    .update({"status": newStatus})
-}
-
-//FROM MENTOR TEDDY
 function seat(table_id, reservation_id) {
     return knex.transaction(async (transaction) => {
       await knex("reservations")
@@ -75,10 +56,8 @@ function seat(table_id, reservation_id) {
 
 module.exports = {
     list,
-    update,
     findTable,
     create,
     delete: destroy,
-    updateStatus,
     seat
 }
