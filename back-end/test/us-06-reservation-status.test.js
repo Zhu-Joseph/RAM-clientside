@@ -155,11 +155,11 @@ describe("US-06 - Reservation status", () => {
     test("returns 200 and changes reservation status to 'seated'", async () => {
       expect(tableOne).not.toBeUndefined();
       expect(reservationOne).not.toBeUndefined();
-    
+
       const seatResponse = await request(app)
         .put(`/tables/${tableOne.id}/seat`)
         .set("Accept", "application/json")
-        .send({ data: { reservation_id: reservationOne.id } });
+        .send({ data: { id: reservationOne.id } });
 
       expect(seatResponse.body.error).toBeUndefined();
       expect(seatResponse.status).toBe(200);
@@ -180,7 +180,7 @@ describe("US-06 - Reservation status", () => {
       const firstSeatResponse = await request(app)
         .put(`/tables/${tableOne.id}/seat`)
         .set("Accept", "application/json")
-        .send({ data: { reservation_id: reservationOne.id } });
+        .send({ data: { id: reservationOne.id } });
 
       expect(firstSeatResponse.body.error).toBeUndefined();
       expect(firstSeatResponse.status).toBe(200);
@@ -188,7 +188,7 @@ describe("US-06 - Reservation status", () => {
       const secondSeatResponse = await request(app)
         .put(`/tables/${tableTwo.id}/seat`)
         .set("Accept", "application/json")
-        .send({ data: { reservation_id: reservationOne.id } });
+        .send({ data: { id: reservationOne.id } });
 
       expect(secondSeatResponse.body.error).toContain("seated");
       expect(secondSeatResponse.status).toBe(400);
@@ -213,7 +213,7 @@ describe("US-06 - Reservation status", () => {
       const seatResponse = await request(app)
         .put(`/tables/${tableOne.id}/seat`)
         .set("Accept", "application/json")
-        .send({ data: { reservation_id: reservationOne.id } });
+        .send({ data: { id: reservationOne.id } });
 
       expect(seatResponse.body.error).toBeUndefined();
       expect(seatResponse.status).toBe(200);
@@ -221,7 +221,7 @@ describe("US-06 - Reservation status", () => {
       const finishResponse = await request(app)
         .delete(`/tables/${tableOne.id}/seat`)
         .set("Accept", "application/json")
-        .send({ data: { reservation_id: reservationOne.id } });
+        .send({ data: { id: reservationOne.id } });
 
       expect(finishResponse.body.error).toBeUndefined();
       expect(finishResponse.status).toBe(200);
@@ -257,7 +257,7 @@ describe("US-06 - Reservation status", () => {
       const seatResponse = await request(app)
         .put(`/tables/${tableOne.id}/seat`)
         .set("Accept", "application/json")
-        .send({ data: { reservation_id: reservationOne.id } });
+        .send({ data: { id: reservationOne.id } });
 
       expect(seatResponse.body.error).toBeUndefined();
       expect(seatResponse.status).toBe(200);
@@ -265,7 +265,7 @@ describe("US-06 - Reservation status", () => {
       const finishResponse = await request(app)
         .delete(`/tables/${tableOne.id}/seat`)
         .set("Accept", "application/json")
-        .send({ data: { reservation_id: reservationOne.id } });
+        .send({ data: { id: reservationOne.id } });
 
       expect(finishResponse.body.error).toBeUndefined();
       expect(finishResponse.status).toBe(200);

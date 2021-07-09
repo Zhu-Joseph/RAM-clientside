@@ -1,4 +1,5 @@
 const service = require("./tables.service")
+const reservationService = require("../reservations/reservations.service")
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary")
 
 function hasData(req, res, next) {
@@ -71,14 +72,14 @@ function isAvailable(req, res, next) {
   }
   
   function isSeated(req, res, next) {
-    const status = Object.keys(res.locals) 
-    // console.log(status.people)
-    if (req.body.data.status === "booked") {
+    const status = res.locals.reservation.status 
+    // console.log(`\n\n\n\n\n\n *******${res.locals.reservation}`)
+    if (status === "booked") {
       next();
     } else {
       next({
         status: 400,
-        message: `Reservation is ${req.body.data.status}.`,
+        message: `Reservation is ${status}.`,
       });
     }
   }
@@ -136,24 +137,26 @@ async function updateResvStatus(req, res, next) {
 
 
 //**************
-async function seat(req, res, next) {
+async function seat(req, res, next) {//res.locals ONLY HAS TABLE NO RESERVATIONS
     const tableId = req.params.table_id
+    // console.log(`\n\n\n\n\n\n *******${Object.keys(res.locals.reservation.status)}`)
     const reservationId = req.body.data.id
+    const data = await service.seat(tableId, res.locals.reservation.id);
 
-    const data = await service.seat(tableId, reservationId)
+    // const data = await service.seat(tableId, reservationId)
     res.json({data})
 }
 
 async function destroy(req, res, next) {
-    const tableId = req.params.table_id
-    const table = await service.findTable(tableId)
+    const table = res.locals.table
+
     res.locals.table = null
     if(!table.occupied) {
         next({status:400, 
             message: "The current table is not occupied"
         })
     } else {
-        const data = await service.delete(tableId)
+        const data = await service.delete(table.id, table.reservation_id)
     }
     
     res.json({data: "Reservation was finished"})
@@ -167,8 +170,7 @@ module.exports = {
         tableExist, 
         isAvailable, 
         hasData,
-        // asyncErrorBoundary(updateResvStatus),
-        asyncErrorBoundary(update)
+        asyncErrorBoundary(seat)
     ],
     delete: [tableExist, asyncErrorBoundary(destroy)]
 }

@@ -168,10 +168,12 @@ async function findResv(req, res, next) {
 
 async function notYetSeated(req, res, next) {
   const id = req.body.data.id
-  const foundReservation = await service.findId(id)
 
+  const foundReservation = await service.findId(id)
+  res.locals.reservation = foundReservation
+  
   if(foundReservation.status === "seated") {
-    next({status: 404, message: `Sorry the current reservation is already ${foundReservation.status}`})
+    next({status: 400, message: `Sorry the current reservation is already ${foundReservation.status}`})
   }
 
   next()
@@ -281,9 +283,9 @@ module.exports = {
     asyncErrorBoundary(create)
   ],
   validResv: [
-    // has_id,
-    notYetSeated, 
+    has_id,
     findResv, 
+    notYetSeated, 
     validSizeandTable
   ],
   read: [reservationExist, asyncErrorBoundary(read)],

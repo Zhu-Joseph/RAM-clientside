@@ -29,12 +29,20 @@ function create(table) {
 }
 
 //TEST REQUIRE THAT WE USE A DELETE METHOD, BUT IT ACTUALLY ACTS MORE LIKE AN UPDATE
-function destroy(tableId) {
+
+function destroy(tableId, reservationId) {
+    return knex.transaction(async (transaction) => {
+        await knex("reservations")
+            .where({"id": reservationId })
+            .update({ status: "finished" })
+            .transacting(transaction);
+
     return knex("tables")
-    .where({"id": tableId})
-    .update({
-        "occupied": false,
-        "reservation_id": null 
+        .where({"id": tableId})
+        .update({
+            "occupied": false,
+            "reservation_id": null 
+        })
     })
 }
 
