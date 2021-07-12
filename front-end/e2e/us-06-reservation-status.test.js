@@ -76,9 +76,8 @@ describe("US-06 - Reservation status - E2E", () => {
         path: ".screenshots/us-06-seated-before.png",
         fullPage: true,
       });
-      // console.log(`\n\n\n\n\n\n\n\n ${Object.keys(reservation)}`)
-      // console.log(`\n\n\n\n\n\n\n\n ---------${Object.values(reservation)}`)
-      await seatReservation(reservation.id, table.id);
+
+      await seatReservation(reservation, table.id);
 
       await page.reload({ waitUntil: "networkidle0" });
 
@@ -101,8 +100,9 @@ describe("US-06 - Reservation status - E2E", () => {
       ).toBeNull();
     });
 
-    test("Finishing the table removes the reservation from the list", async () => {
-      await seatReservation(reservation.id, table.id);
+    test("Finishing the table removes the reservation from the list", async () => {   
+        
+      await seatReservation(reservation, table.id);
 
       await page.reload({ waitUntil: "networkidle0" });
 
