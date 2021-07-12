@@ -11,7 +11,8 @@ export default function NewReservations() {
         "mobile_number": "",
         "reservation_date": "",
         "reservation_time": "",
-        "people": 0
+        "people": 0,
+        "status": "booked"
       }
     const initialError = {
         "message": []
@@ -19,7 +20,7 @@ export default function NewReservations() {
     const history = useHistory()
     const [formData, setFormData] = useState({ ...initialState });
     const [error, setError] = useState({...initialError })
-
+ 
     function submitHandler(event) {//TIMEZONE IS 420 OR GMT-7 PDT/PST SO CALI
         event.preventDefault()
         const abortController = new AbortController() 
@@ -29,8 +30,7 @@ export default function NewReservations() {
         setError({message: error.message})
  
         if(error.message.length > 0) {
-            console.log('error')
- 
+            console.log(`Number of errors ${error.message.length}`)
         }
         else {
             createReservations({data: formData}, abortController.signal)

@@ -39,6 +39,7 @@ describe("US-06 - Reservation status - E2E", () => {
         reservation_date: "2035-01-01",
         reservation_time: "13:45",
         people: 4,
+        status: "booked"
       });
 
       table = await createTable({
@@ -75,7 +76,8 @@ describe("US-06 - Reservation status - E2E", () => {
         path: ".screenshots/us-06-seated-before.png",
         fullPage: true,
       });
-
+      // console.log(`\n\n\n\n\n\n\n\n ${Object.keys(reservation)}`)
+      // console.log(`\n\n\n\n\n\n\n\n ---------${Object.values(reservation)}`)
       await seatReservation(reservation.id, table.id);
 
       await page.reload({ waitUntil: "networkidle0" });
