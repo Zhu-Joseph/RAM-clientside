@@ -1,5 +1,6 @@
 import React from "react"
 import {deleteTable, updateStatus} from "../utils/api";
+import { v4 } from "uuid";
 
 export default function Tables (props) {
     const {table} = props
@@ -21,7 +22,7 @@ export default function Tables (props) {
     return (
       <div>
         {table.occupied ? 
-          <li key={table[table_id]} className="list-group-item list-group-item-warning">
+          <li key={v4} className="list-group-item list-group-item-warning">
             Table: {table.table_name} 
             <span className="col-md">Status:</span> 
               <span data-table-id-status={`${table[table_id]}`}>Occupied</span>
@@ -32,7 +33,7 @@ export default function Tables (props) {
             
           </li> : 
 
-          <li key={table[table_id]} className="list-group-item list-group-item-success">
+          <li key={v4} className="list-group-item list-group-item-success">
             Table: {table.table_name}
             <span className="col-md">Status:</span> 
             <span className="col" data-table-id-status={`${table[table_id]}`}>Free</span> 

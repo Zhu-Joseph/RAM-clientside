@@ -99,21 +99,18 @@ export default function NewReservations() {
         }
       }
 
-      if(error.message.length > 0) {
-        return (
-            <ErrorAlert error={error} />
-        )
-    }
-
     return (
-        <FormReservations 
-        formData={formData}
-        handleChange={handleChange}
-        handlePhone={handlePhone}
-        handleDate={handleDate}
-        submitHandler={submitHandler}
-        cancelHandler={cancelHandler}
-        handleNumberChange={handleNumberChange}
-        />
+        <>
+        {error.message.length > 0 ? <ErrorAlert error={error} />: null}
+            <FormReservations 
+            formData={formData}
+            handleChange={handleChange}
+            handlePhone={handlePhone}
+            handleDate={handleDate}
+            submitHandler={submitHandler}
+            cancelHandler={cancelHandler}
+            handleNumberChange={handleNumberChange}
+            />
+        </>
     )
 }

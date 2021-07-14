@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {useHistory, useParams} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
 import {updateTable, listReservationSeat, listTables} from "../utils/api"
+import { v4 } from 'uuid'
 
 export default function ReservationSeats() {
     const [tables, setTables] = useState([])
@@ -54,9 +55,8 @@ export default function ReservationSeats() {
         
         else {
             const tableId = updateInfo.id
-            console.log(reservation)
+
             updateTable(tableId, reservation, abortController.signal)
-            // updateStatus(reservation_id, {data: {"status": "seated"}}, abortController.signal)
                 .then(() => {
                     history.push({
                         pathname: "/dashboard",
@@ -78,34 +78,31 @@ export default function ReservationSeats() {
     function cancelHandler() {
         history.goBack()
     }
-    
-    if(error) {
-        return (
-            <ErrorAlert error={error} />
-        )
-    }
 
     if(tables) {
         const list = tables.map((table) => {
 
             return (
-                <option className="dropdown-item" name="table_id" key={table.id} value={`${table.id} ${table.capacity}`}>
+                <option key={v4} className="dropdown-item" name="table_id" value={`${table.id} ${table.capacity}`}>
                     {table.table_name} - {table.capacity}
                 </option>
             )
         })
         return (
-            <div className="btn-group">
-                <form onSubmit={handleSubmit}>
-                    <select name="table_id" className="form-select form-select-lg mb-3" value={reservationTable} onChange={handleChange} >
-                        {list}
-                    </select>
-                    <button className="btn btn-outline-success" type="submit" onSubmit={handleSubmit}>Submit</button> 
-                </form>
-                <div>
-                    <button type="button" className="btn btn-outline-danger" onClick={cancelHandler}>Cancel</button>
-                </div>          
-            </div>
+            <>
+                {error ? <ErrorAlert error={error} />: null}
+                <div className="btn-group">
+                    <form onSubmit={handleSubmit}>
+                        <select name="table_id" className="form-select form-select-lg mb-3" value={reservationTable} onChange={handleChange} >
+                            {list}
+                        </select>
+                        <button className="btn btn-outline-success" type="submit" onSubmit={handleSubmit}>Submit</button> 
+                    </form>
+                    <div>
+                        <button type="button" className="btn btn-outline-danger" onClick={cancelHandler}>Cancel</button>
+                    </div>          
+                </div>
+            </>
         )
     }
 

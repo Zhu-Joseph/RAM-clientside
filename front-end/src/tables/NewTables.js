@@ -71,14 +71,9 @@ export default function NewTables() {
         setFormData(initialState)
     }
 
-    if(error.message.length > 0) {
-        return (
-            <ErrorAlert error={error} />
-        )
-    }
-
     return (
         <div >
+            {error.message.length > 0 ? <ErrorAlert error={error} />: null}
             <form onSubmit={submitHandler} >
                 <div className="row mb-3">
                     <label className="col-sm-2 col-form-label">Table Name:</label>

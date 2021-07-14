@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom";
+import { v4 } from "uuid";
 import { updateStatus } from "../utils/api";
 
 export default function Reservations (props) {
@@ -18,7 +19,7 @@ export default function Reservations (props) {
     }
 
     return (
-        <li >
+        <li key={v4}>
             <div name="first_name">First: {reservation.first_name}</div>
             <div name="last_name">Last: {reservation.last_name}</div>       
             <div name="reservation_time">Reservation Time: {reservation.reservation_time}</div>           
