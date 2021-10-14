@@ -83,7 +83,7 @@ export default function Search() {
     return (
         <div>
             <form className="row mb-3">
-                <label className="col-sm-1 col-form-label">Search </label>
+                <label className="col-sm-1 col-form-label">Search</label>
                 <div>
                   <input className="col form-control" name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
                   onChange={handlePhone} value={formData.mobile_number}/>
