@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import Reservations from "../reservations/Reservations";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import queryString from "query-string"
 
 export default function Search() {
     const initialState = {
@@ -13,14 +12,15 @@ export default function Search() {
     const [reservations, setReservations] = useState([]);
     const [reservationsError, setReservationsError] = useState(null);
     const {search} = useLocation()
-    const searchPhone = queryString.parse(search).mobile_phone
+    const history = useHistory()
+    const searchPhone = search.replace(/([a-z]|\?|=|_)/g, "")
 
     useEffect(loadDashboard, [searchPhone]);
-    
+
     function loadDashboard() {
       const abortController = new AbortController();
       setReservationsError(null);
-      listReservations({ mobile_phone: searchPhone }, abortController.signal)
+      listReservations({ mobile_phone: searchPhone ? searchPhone : undefined }, abortController.signal)
         .then(setReservations)
         .catch(setReservationsError);
 
@@ -47,6 +47,15 @@ export default function Search() {
                     });                
             }
         }
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault()
+      // if(formData.mobile_phone.length != 12) {
+      //   window.alert("Please enter valid phone number")
+      // } else {
+        history.push(`/search?mobile_phone=${formData.mobile_number}`)
+      // }
     }
 
     const list = reservations.map((reservation) => {
@@ -82,14 +91,14 @@ export default function Search() {
 
     return (
         <div>
-            <form className="row mb-3">
+            <form className="row mb-3" onSubmit={handleSubmit}>
                 <label className="col-sm-1 col-form-label">Search</label>
                 <div>
                   <input className="col form-control" name="mobile_number" type="tel" placeholder="Enter a customer's phone number" 
                   onChange={handlePhone} value={formData.mobile_number}/>
                 </div>
                 <button type="submit" className="btn btn-outline-secondary">
-                  <Link to={`/search?mobile_phone=${formData.mobile_number}`}>Find</Link>
+                  Find
                 </button>
             </form>
             <ol>{list}</ol>
