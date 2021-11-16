@@ -1,5 +1,5 @@
-# Capstone: Restaurant Reservation System Frontend
+# Capstone: Restaurant Assistance Manager (RAM) Frontend
+**For your everyday manager**
 
-This starter code for the backend of the capstone project in the Thinkful curriculum.
+This is the frontend of the RAM's project. The app is built with a React framework.
 
-See [../README.md](../README.md) for detailed instructions.
