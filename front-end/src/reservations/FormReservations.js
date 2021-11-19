@@ -1,5 +1,6 @@
 import React from 'react'
 import {v4} from "uuid"
+import "./reservations_styling/FormReservations.css"
 
 export default function FormReservations (props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -10,7 +11,7 @@ export default function FormReservations (props) {
 
     return (
         <>
-        <form key={v4} onSubmit={submitHandler}>
+        <form className="form" key={v4} onSubmit={submitHandler}>
             <div className="row mb-3">
                     <label className="col-sm-2 col-form-label">First Name:</label>
                     <input name="first_name" type="text" placeholder="first name" 

@@ -84,7 +84,7 @@ export default function NewReservations() {
                 setFormData({
                     ...formData,
                     [target.name]: value,
-                    });                
+                });                
             }
         }
       }
