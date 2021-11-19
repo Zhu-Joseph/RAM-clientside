@@ -10,8 +10,8 @@ export default function FormReservations (props) {
 
 
     return (
-        <>
-        <form className="form" key={v4} onSubmit={submitHandler}>
+        <div className="form">
+        <form key={v4} onSubmit={submitHandler}>
             <div className="row mb-3">
                     <label className="col-sm-2 col-form-label">First Name:</label>
                     <input name="first_name" type="text" placeholder="first name" 
@@ -54,6 +54,6 @@ export default function FormReservations (props) {
                 <button type="submit" className="btn btn-outline-success" onSubmit={submitHandler}>Submit</button>
             </form>
             <button className="btn btn-outline-danger" onClick={cancelHandler}>Cancel</button>
-        </>
+        </div>
     )
 }

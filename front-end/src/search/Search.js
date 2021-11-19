@@ -51,11 +51,7 @@ export default function Search() {
 
     function handleSubmit(event) {
       event.preventDefault()
-      // if(formData.mobile_phone.length != 12) {
-      //   window.alert("Please enter valid phone number")
-      // } else {
         history.push(`/search?mobile_phone=${formData.mobile_number}`)
-      // }
     }
 
     const list = reservations.map((reservation) => {

@@ -3,6 +3,7 @@ import {useHistory} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
 import {validateTable} from "../utils/handlers"
 import {createTable} from "../utils/api"
+import "./tables_styling/NewTables.css"
 
 export default function NewTables() {
     const initialState = {
@@ -72,7 +73,7 @@ export default function NewTables() {
     }
 
     return (
-        <div >
+        <div className="form">
             {error.message.length > 0 ? <ErrorAlert error={error} />: null}
             <form onSubmit={submitHandler} >
                 <div className="row mb-3">
