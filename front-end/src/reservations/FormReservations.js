@@ -3,11 +3,10 @@ import {v4} from "uuid"
 import "./reservations_styling/FormReservations.css"
 
 export default function FormReservations (props) {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     const {formData, handleChange, handlePhone, 
         handleDate, submitHandler, cancelHandler, 
         handleNumberChange} = props
-
 
     return (
         <div className="form">
