@@ -22,7 +22,7 @@ export default function NewReservations() {
     const [formData, setFormData] = useState({ ...initialState });
     const [error, setError] = useState({...initialError })
  
-    function submitHandler(event) {//TIMEZONE IS 420 OR GMT-7 PDT/PST SO CALI
+    function submitHandler(event) {//TIMEZONE IS 420 OR GMT-7 PDT/PST SO CALIFORNIA
         event.preventDefault()
         const abortController = new AbortController() 
 
