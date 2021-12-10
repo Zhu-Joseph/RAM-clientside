@@ -26,7 +26,6 @@ export default function NewTables() {
  
         if(!result) setError({message: error.message})
         
-
         if(error.message.length > 0) {
             console.log(`Error ${error.message}`)
         }
